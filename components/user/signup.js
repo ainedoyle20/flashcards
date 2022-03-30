@@ -14,6 +14,12 @@ function SignUp({ setShowSignin }) {
     });
 
     const router = useRouter();
+    function reroute() {
+        setTimeout(() => {
+            console.log('reroute timer running!');
+            router.replace('/');
+        }, 2000);
+    }
 
     function handleChange(e) {
         const { value, name } = e.target;
@@ -33,8 +39,8 @@ function SignUp({ setShowSignin }) {
 
         try {
             const { user } = await registerWithEmailAndPassword(email, password);
+            reroute();
             await createUserProfileDocument(user, { displayName: displayName });
-            router.replace('/');
         } catch (error) {
             console.log('error: ', error);
             alert('This email is already in use!');

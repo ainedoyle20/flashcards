@@ -12,6 +12,12 @@ function SignIn({ setShowSignin }) {
     });
 
     const router = useRouter();
+    function reroute() {
+        setTimeout(() => {
+            console.log('reroute timer running!');
+            router.replace('/');
+        }, 2000);
+    }
 
     function handleChange(e) {
         const { value, name } = e.target;
@@ -26,7 +32,7 @@ function SignIn({ setShowSignin }) {
 
         try {
             await loginWithEmailAndPassword(email, password);
-            router.replace('/');
+            reroute();
         } catch (error) {
             if (error.message === 'Firebase: Error (auth/wrong-password).') {
                 alert('Your password is incorrect. Please try again.');

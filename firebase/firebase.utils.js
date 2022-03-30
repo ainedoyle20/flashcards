@@ -59,6 +59,7 @@ export const registerWithEmailAndPassword = (email, password) => {
 }
 
 export const loginWithEmailAndPassword = async (email, password) => {
+    console.log('loginWithEmailAndPassword');
     return await signInWithEmailAndPassword(auth, email, password);
 }
 
@@ -69,34 +70,57 @@ export const signInWithGoogle = () => signInWithPopup(auth, provider).then((resu
 // End of user related functions
 
 // Start of flashcard functions
-export async function setDeckDoc(currentUserId) {
+async function setDeckDoc(currentUserId) {
     const deckRef = doc(db, 'decks', currentUserId);
 
     try {
         await setDoc(deckRef, {
-            decks: [],
+            decks: {},
         });
     } catch (error) {
         console.log('error setting deck document: ', error.message);
     }
 }
 
+// export async function createUserDeckDocument(currentUserId) {
+//     const decksRef = doc(db, 'decks', currentUserId);
+//     const decksSnap = await getDoc(decksRef);
 
-export async function createUserDeckDocument(currentUserId) {
+//     if (!decksSnap.exists()) {
+//         console.log('decks document does NOT exist');
+//         try {
+//             await setDeckDoc(currentUserId);
+//         } catch (error) {
+//             console.log('error creating user deck doc: ', error.message);
+//         }
+//     }
+
+//     console.log('got here');
+//     return;
+// }
+
+export async function getDecks(currentUserId) {
     const decksRef = doc(db, 'decks', currentUserId);
     const decksSnap = await getDoc(decksRef);
 
     if (!decksSnap.exists()) {
-        console.log('decks document does NOT exist');
-        try {
-            await setDeckDoc(currentUserId);
-        } catch (error) {
-            console.log('error creating user deck doc: ', error.message);
-        }
+        return {};
     }
 
-    console.log('got here');
-    return;
+    const decks = decksSnap.data();
+    return decks;
+}
+
+export async function getSpecificDeck(currentUserId, deckId) {
+    const allDecks = await getDecks(currentUserId);
+    console.log('allDecks: ', allDecks);
+
+    if (allDecks === {}) {
+        console.log('got in here')
+        return;
+    }
+
+    return allDecks[deckId];
 }
 
 export {onAuthStateChanged, onSnapshot, auth, getDoc};

@@ -15,8 +15,16 @@ function MainHeader() {
     const router = useRouter();
     const atAuth = router.route === '/auth' ? true : false;
 
+    function reroute() {
+        setTimeout(() => {
+            console.log('logout reroute is running');
+            router.replace('/auth');
+        }, 1000);
+    }
+
     function signOutUserHandler() {
         signOutUser();
+        reroute();
     }
     return (
         <header className={atAuth ? styles.hidden : styles.mainheader}>
@@ -27,11 +35,7 @@ function MainHeader() {
                         <Link href="/public-flashcards">Public-Flashcards</Link>
                     </li>
                     <li>
-                        <Link href="/auth" >
-                            <a>
-                                <span onClick={signOutUserHandler}>Logout</span>
-                            </a>
-                        </Link>
+                        <div onClick={signOutUserHandler}>Logout</div>
                     </li>
                 </ul>
             </nav>

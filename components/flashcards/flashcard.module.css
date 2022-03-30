@@ -9,3 +9,7 @@
     cursor: pointer;
     margin: 10px;
 }
+
+.inactive {
+    display: none;
+}

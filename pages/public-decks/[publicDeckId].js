@@ -3,18 +3,19 @@ import { getSpecificPublicDeck } from '../../firebase/firebase.utils';
 
 import FlashcardModal from '../../components/flashcards/flashcard-modal';
 import Flashcard from '../../components/flashcards/flashcard';
+import FlashcardsContainer from '../../components/flashcards/flashcards-container';
 
 function SpecificDeckPage(props) {
-  const [showFlascardModal, setShowFlashcardModal] = useState(false);
+  // const [showFlascardModal, setShowFlashcardModal] = useState(false);
 
-  const { deck, currentUserId, publicDeckId } = props;
-  const flashcards = deck.flashcards;
-  console.log('specificPublicDeck: ', deck);
-  console.log('specificPublicDeck.createrId: ', deck.createrId);
+  // const { deck, currentUserId, publicDeckId } = props;
+  // const flashcards = deck.flashcards;
+  // console.log('specificPublicDeck: ', deck);
+  // console.log('specificPublicDeck.createrId: ', deck.createrId);
 
   return (
     <Fragment>
-      <button onClick={() => setShowFlashcardModal(!showFlascardModal)}>Add Flashcard</button>
+      {/* <button onClick={() => setShowFlashcardModal(!showFlascardModal)}>Add Flashcard</button>
       {
         showFlascardModal ? <FlashcardModal currentUserId={currentUserId} deck={deck} deckId={publicDeckId} /> : null
       }
@@ -22,7 +23,8 @@ function SpecificDeckPage(props) {
         !flashcards.length ? <h1>No flashcards created in this deck yet!</h1> : (
           flashcards.map(flashcard => <Flashcard key={flashcard.question} flashcard={flashcard} />)
         )
-      }
+      } */}
+      <FlashcardsContainer props={props} />
     </Fragment>
   );
 }
@@ -56,7 +58,7 @@ export async function getServerSideProps(context) {
       props: {
         currentUserId,
         deck: specificPublicDeck,
-        publicDeckId,
+        deckId: publicDeckId,
       }
     };
 }

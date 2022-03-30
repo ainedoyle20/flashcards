@@ -12,6 +12,7 @@ function FlashcardModal({ currentUserId, deckId, deck }) {
     });
 
     const router = useRouter();
+    console.log('router.route: ', router.route);
 
     function handleChange(e) {
         const { id, value } = e.target;
@@ -22,7 +23,7 @@ function FlashcardModal({ currentUserId, deckId, deck }) {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (router.route === `/decks/${deckId}`) {
+        if (router.route === '/decks/[deckId]') {
             try {
                 await updateFlashcards(currentUserId, deck, deckId, formInput);
                 setFormInput({

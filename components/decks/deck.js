@@ -2,8 +2,9 @@ import { useRouter } from 'next/router';
 
 import styles from './deck.module.css';
 
-function Deck({ deck }) {
+function Deck({ deck, index }) {
     const router = useRouter();
+    console.log('index: ', index);
 
     function handleClick() {
         if (router.route === '/decks') {

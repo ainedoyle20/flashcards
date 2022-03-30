@@ -9,11 +9,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <CookiesProvider>
       <UserContextProvider>
-        <Fragment>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-        </Fragment>
+          <Fragment>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+          </Fragment>
       </UserContextProvider>
     </CookiesProvider>
   );

@@ -16,7 +16,7 @@ function SignIn({ setShowSignin }) {
         setTimeout(() => {
             console.log('reroute timer running!');
             router.replace('/');
-        }, 2000);
+        }, 1000);
     }
 
     function handleChange(e) {

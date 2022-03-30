@@ -32,7 +32,7 @@ function MainHeader() {
             <nav>
                 <ul>
                     <li>
-                        <Link href="/public-flashcards">Public-Flashcards</Link>
+                        <Link href="/public-decks">Public-Decks</Link>
                     </li>
                     <li>
                         <div onClick={signOutUserHandler}>Logout</div>

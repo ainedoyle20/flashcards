@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { getSpecificDeck } from '../../firebase/firebase.utils';
+import { getSpecificPublicDeck } from '../../firebase/firebase.utils';
 
 import FlashcardModal from '../../components/flashcards/flashcard-modal';
 import Flashcard from '../../components/flashcards/flashcard';
@@ -7,17 +7,16 @@ import Flashcard from '../../components/flashcards/flashcard';
 function SpecificDeckPage(props) {
   const [showFlascardModal, setShowFlashcardModal] = useState(false);
 
-  const { deck, currentUserId, deckId } = props;
+  const { deck, currentUserId, publicDeckId } = props;
   const flashcards = deck.flashcards;
-  console.log('specificDeck: ', deck);
-  console.log('specificDeck.flashcards: ', deck.flashcards);
-
+  console.log('specificPublicDeck: ', deck);
+  console.log('specificPublicDeck.createrId: ', deck.createrId);
 
   return (
     <Fragment>
       <button onClick={() => setShowFlashcardModal(!showFlascardModal)}>Add Flashcard</button>
       {
-        showFlascardModal ? <FlashcardModal currentUserId={currentUserId} deck={deck} deckId={deckId} /> : null
+        showFlascardModal ? <FlashcardModal currentUserId={currentUserId} deck={deck} deckId={publicDeckId} /> : null
       }
       {
         !flashcards.length ? <h1>No flashcards created in this deck yet!</h1> : (
@@ -31,8 +30,7 @@ function SpecificDeckPage(props) {
 export async function getServerSideProps(context) {
     const currentUser = context.req.cookies.currentUser;
     const {currentUserId} = context.req.cookies;
-    const deckId = context.params.deckId;
-    console.log('deckId: ', deckId);
+    const publicDeckId = context.params.publicDeckId;
   
     if (currentUser === 'false') {
       return {
@@ -43,12 +41,12 @@ export async function getServerSideProps(context) {
       }
     }
   
-    const specificDeck = await getSpecificDeck(currentUserId, deckId);
+    const specificPublicDeck = await getSpecificPublicDeck(publicDeckId);
 
-    if (!specificDeck) {
+    if (!specificPublicDeck) {
       return {
         redirect: {
-          destination: '/decks',
+          destination: '/public-decks',
           permanent: false,
         }
       }
@@ -57,10 +55,10 @@ export async function getServerSideProps(context) {
     return {
       props: {
         currentUserId,
-        deck: specificDeck,
-        deckId,
+        deck: specificPublicDeck,
+        publicDeckId,
       }
     };
-  }
+}
 
 export default SpecificDeckPage;

@@ -5,7 +5,7 @@ import { updateFlashcards, updateFlashcardsPublic } from '../../firebase/firebas
 
 import styles from './flashcard-modal.module.css';
 
-function FlashcardModal({ currentUserId, deckId, deck }) {
+function FlashcardModal({ currentUserId, deck }) {
     const [formInput, setFormInput] = useState({
         question: '',
         answer: '',
@@ -25,7 +25,7 @@ function FlashcardModal({ currentUserId, deckId, deck }) {
 
         if (router.route === '/decks/[deckId]') {
             try {
-                await updateFlashcards(currentUserId, deck, deckId, formInput);
+                await updateFlashcards(currentUserId, deck, formInput);
                 setFormInput({
                     question: '',
                     answer: '',
@@ -36,7 +36,7 @@ function FlashcardModal({ currentUserId, deckId, deck }) {
             }    
         } else {
             try {
-                const isCreator = await updateFlashcardsPublic(currentUserId, deck, deckId, formInput);
+                const isCreator = await updateFlashcardsPublic(currentUserId, deck, formInput);
                 if (!isCreator) {
                     alert('You cannot update a public deck unless you created it. However, if you add the deck to your personal decks, you can then alter it.');
                 }

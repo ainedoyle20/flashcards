@@ -1,0 +1,23 @@
+.listcontainer {
+    width: 100%;
+    overflow-y: scroll;
+    position: absolute;
+    top: 9rem;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list li {
+    border: 1px solid black;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.index {
+    padding-right: 5px;
+}

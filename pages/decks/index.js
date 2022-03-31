@@ -1,39 +1,11 @@
-import { Fragment, useState } from 'react';
 import { getDecks } from '../../firebase/firebase.utils';
 
-import DeckModal from '../../components/decks/deck-modal';
-import Deck from '../../components/decks/deck';
+import DecksContainer from '../../components/decks/decks-container';
 
 function DecksPage(props) {
-  const [showDeckModal, setShowDeckModal] = useState(false);
-
-  const { currentUserId } = props;
-  const { decks } = props;
-  console.log('UserId: ', currentUserId);
-  console.log('decks', decks);
-  const noDecks = decks ? false : true;
-
-  const decksArray = [];
-  if (!noDecks) {
-    for (let key in decks) {
-      decksArray.push({ ...decks[key], id: key});
-    }
-    console.log('decksArray: ', decksArray);
-  }
 
   return (
-    <Fragment>
-      <button onClick={() => setShowDeckModal(!showDeckModal)}>Create Deck</button>
-      {
-        showDeckModal ? <DeckModal currentUserId={currentUserId} /> : null
-      }
-      {
-        noDecks ? <h1>You currently have no flashcard decks</h1> : (
-          decksArray.map(deck => <Deck key={deck.id} deck={deck} />)
-        )
-      }
-    </Fragment>
-    
+    <DecksContainer props={props} />
   );
 }
 

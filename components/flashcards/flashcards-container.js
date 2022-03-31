@@ -1,27 +1,29 @@
 import { useState } from "react";
 
-import FlashcardModal from './flashcard-modal';
+import FlashcardHeader from "./flashcard-header";
+import FlashcardModal from '../flashcards-modals/flashcard-modal';
 import FlashcardsCarousel from "./flashcards-carousel";
+import FlashcardsList from "./flashcards-list";
 
 import styles from './flashcards-container.module.css';
 
-function FlashcardsContainer({props}) {
+function FlashcardsContainer({props, setShowErrorModal}) {
     const [showFlascardModal, setShowFlashcardModal] = useState(false);
+    const [showList, setShowList] = useState(false);
 
-    const { deck, currentUserId, deckId } = props;
+    const { deck, currentUserId } = props;
     const flashcards = deck.flashcards;
-
-    console.log('props: ', props);
-    
 
     return (
         <div className={styles.flashcardContainer}>
-            <button onClick={() => setShowFlashcardModal(!showFlascardModal)}>Add Flashcard</button>
+            <FlashcardHeader setShowFlashcardModal={setShowFlashcardModal} setShowList={setShowList} setShowErrorModal={setShowErrorModal} props={props} />
             {
-                showFlascardModal ? <FlashcardModal currentUserId={currentUserId} deck={deck} deckId={deckId} /> : null
+                showFlascardModal ? <FlashcardModal currentUserId={currentUserId} showFlascardModal={showFlascardModal} deck={deck} /> : null
             }
             {
-                flashcards.length ? <FlashcardsCarousel flashcards={flashcards} /> : <h1>No available Flashcards!</h1>
+                flashcards.length && !showList ? <FlashcardsCarousel flashcards={flashcards} /> : (
+                    flashcards.length && showList ? <FlashcardsList flashcards={flashcards} /> : <h1>No available Flashcards!</h1>
+                )
             }
         </div>
     )

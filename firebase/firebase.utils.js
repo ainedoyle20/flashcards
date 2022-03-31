@@ -10,7 +10,7 @@ import {
     signInWithEmailAndPassword,
 } from 'firebase/auth';
 
-import { getFirestore, onSnapshot, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteField } from 'firebase/firestore';
 
 // For unique ids
 import { v4 as createUid } from 'uuid';
@@ -73,7 +73,7 @@ export const signInWithGoogle = () => signInWithPopup(auth, provider).then((resu
 // End of user related functions
 
 // Start of flashcard functions
-async function checkIsCreator(currentUserId, deckId) {
+export async function checkIsCreator(currentUserId, deckId) {
     const specificPublicDeck = await getSpecificPublicDeck(deckId);
     console.log('specificPublicDeck.createrId: ', specificPublicDeck.createrId);
     console.log('currentUserId: ', currentUserId);
@@ -92,6 +92,7 @@ async function updatePublicDecks(deckRef, currentUserId, publicDeckObj) {
                 createdBy: createdBy,
                 flashcards: [],
                 createrId: currentUserId,
+                id: uniqueId,
             }
         })
     } catch (error) {
@@ -114,6 +115,7 @@ async function updateDeckDoc(currentUserId, deckObj) {
                 description: description,
                 createdBy: createdBy,
                 flashcards: [],
+                id: uniqueId,
             }
         })
     } catch (error) {
@@ -134,6 +136,7 @@ async function setDeckDoc(currentUserId, deckObj) {
                 description,
                 createdBy,
                 flashcards: [],
+                id: uniqueId,
             },
         });
     } catch (error) {
@@ -158,20 +161,33 @@ async function setDeckDoc(currentUserId, deckObj) {
 //     return;
 // }
 
+export async function deletePublicDeck(deckId) {
+    const publicDecksId = 'PUBLIC_DECKS_UID';
+    const decksRef = doc(db, 'public-decks', publicDecksId);
+
+    try {
+        await updateDoc(decksRef, {
+            [deckId]: deleteField()
+        });
+    } catch (error) {
+        console.log('error deleting deck', error.message);
+    }
+}
+
 export async function updateFlashcardsPublic(currentUserId, deck, deckId, flashcardObj) {
-    const isCreator = await checkIsCreator(currentUserId, deckId);
+    const isCreator = await checkIsCreator(currentUserId, deck.id);
     if (!isCreator) return false;
 
     const publicDecksId = 'PUBLIC_DECKS_UID';
 
     const decksRef = doc(db, 'public-decks', publicDecksId);
     const decksSnap = await getDoc(decksRef);
-    const flashcards = decksSnap.data()[deckId].flashcards;
+    const flashcards = decksSnap.data()[deck.id].flashcards;
     flashcards.push(flashcardObj);
 
     try {
         await updateDoc(decksRef, {
-            [deckId]: {
+            [deck.id]: {
                 ...deck,
                 flashcards: flashcards,
             }
@@ -198,26 +214,36 @@ export async function getPublicDecks() {
 
     const decksRef = doc(db, 'public-decks', publicDecksId);
     const decksSnap = await getDoc(decksRef);
-    
-    if (!decksSnap.data()) {
-        return false;
-    }
+    console.log('decksSnap.data(): ', decksSnap.data().length);
 
     const publicDecks = decksSnap.data();
     return publicDecks;
+}
+
+export async function deleteDeck(currentUserId, deckId) {
+    const decksRef = doc(db, 'decks', currentUserId);
+
+    try {
+        await updateDoc(decksRef, {
+            [deckId]: deleteField()
+        });
+        console.log('deleted deck successfully!!');
+    } catch (error) {
+        console.log('error deleting deck', error.message);
+    }
 }
 
 export async function updateFlashcards(currentUserId, deck, deckId, flashcardObj) {
     const deckRef = doc(db, 'decks', currentUserId);
     const deckSnap = await getDoc(deckRef);
     const deckData = deckSnap.data();
-    console.log('deckData.deckId.flashcards: ', deckData[deckId].flashcards);
-    const flashcards = deckData[deckId].flashcards;
+    console.log('deckData.deckId.flashcards: ', deckData[deck.id].flashcards);
+    const flashcards = deckData[deck.id].flashcards;
     flashcards.push(flashcardObj);
 
     try {
         await updateDoc(deckRef, {
-            [deckId]: {
+            [deck.id]: {
                 ...deck,
                 flashcards: flashcards,
             }

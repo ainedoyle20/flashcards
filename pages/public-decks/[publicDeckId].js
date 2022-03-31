@@ -1,30 +1,17 @@
 import { Fragment, useState } from 'react';
+
 import { getSpecificPublicDeck } from '../../firebase/firebase.utils';
 
-import FlashcardModal from '../../components/flashcards/flashcard-modal';
-import Flashcard from '../../components/flashcards/flashcard';
+import DeleteErrorModal from '../../components/decks/delete-error-modal';
 import FlashcardsContainer from '../../components/flashcards/flashcards-container';
 
-function SpecificDeckPage(props) {
-  // const [showFlascardModal, setShowFlashcardModal] = useState(false);
-
-  // const { deck, currentUserId, publicDeckId } = props;
-  // const flashcards = deck.flashcards;
-  // console.log('specificPublicDeck: ', deck);
-  // console.log('specificPublicDeck.createrId: ', deck.createrId);
+function SpecificPublicDeckPage(props) {
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   return (
     <Fragment>
-      {/* <button onClick={() => setShowFlashcardModal(!showFlascardModal)}>Add Flashcard</button>
-      {
-        showFlascardModal ? <FlashcardModal currentUserId={currentUserId} deck={deck} deckId={publicDeckId} /> : null
-      }
-      {
-        !flashcards.length ? <h1>No flashcards created in this deck yet!</h1> : (
-          flashcards.map(flashcard => <Flashcard key={flashcard.question} flashcard={flashcard} />)
-        )
-      } */}
-      <FlashcardsContainer props={props} />
+      {showErrorModal ? <DeleteErrorModal setShowDeleteErrorModal={setShowErrorModal} /> : null}
+      <FlashcardsContainer props={props} setShowErrorModal={setShowErrorModal} />
     </Fragment>
   );
 }
@@ -58,9 +45,8 @@ export async function getServerSideProps(context) {
       props: {
         currentUserId,
         deck: specificPublicDeck,
-        deckId: publicDeckId,
       }
     };
 }
 
-export default SpecificDeckPage;
+export default SpecificPublicDeckPage;

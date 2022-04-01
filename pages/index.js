@@ -1,20 +1,15 @@
-import { Fragment } from "react";
-import { useRouter } from "next/router";
+import Hero from '../components/home/hero';
 
-function Home() {
-  const router = useRouter();
+function Home(props) {
   return (
-    <Fragment>
-      <h1>Welcome!</h1>
-      <button style={{ cursor: 'pointer'}} onClick={() => router.push('/decks')}>View Flashcards</button>
-    </Fragment>
+    <Hero props={props} />
   );
 }
 
 export async function getServerSideProps(context) {
-  const currentUser = context.req.cookies.currentUser;
+  let currentUser = context.req.cookies.currentUser;
 
-  if (currentUser === 'false') {
+  if (currentUser === 'false' || currentUser === undefined) {
     return {
       redirect: {
         destination: '/auth',
@@ -23,9 +18,14 @@ export async function getServerSideProps(context) {
     }
   }
 
+  console.log('currentUser in /: ', currentUser);
+  if (currentUser === undefined) {
+    currentUser = null;
+  }
+
   return {
     props: {
-      currentUser
+      currentUser,
     }
   };
 }

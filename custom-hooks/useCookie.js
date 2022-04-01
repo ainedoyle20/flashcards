@@ -1,23 +1,22 @@
-import React, { useEffect } from "react";
+// import { useEffect } from "react";
 
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 
-export default function useCookie(user) {
-    const [cookies, setCookie] = useCookies(['currentUser']);
+// export default function useCookie(userData) {
+//     const [cookies, setCookie] = useCookies(['currentUser']);
 
-    console.log('hit');
+//     console.log('hit');
 
-    useEffect(() => {
-        if (user) {
-            console.log('useCookie user is true', user.id);
-            setCookie('currentUser', true, { path: '/' });
-            setCookie('currentUserId', user.id, { path: '/'});
-        } else {
-            console.log('useCookie user is false: ', user);
-            setCookie('currentUser', false, { path: '/' });
-            setCookie('currentUserId', null, { path: '/'});
-        }
-    }, [user]);
+//     useEffect(() => {
+//         console.log('userData: ', userData);
+//         if (userData) {
+//             setCookie('currentUser', true, { path: '/' });
+//             setCookie('currentUserId', userData.id, { path: '/' });
+//         } else {
+//             setCookie('currentUser', false, { path: '/' });
+//             setCookie('currentUserId', null, { path: '/' });
+//         }
+//     }, [userData]);
 
-    return cookies;
-}
+//     return cookies;
+// }

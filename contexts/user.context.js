@@ -1,47 +1,38 @@
-import { createContext, useState, useEffect } from "react";
-// import { useCookies } from 'react-cookie';
-import useCookie from "../custom-hooks/useCookie";
+// import { createContext, useState, useEffect } from "react";
+// import useCookie from "../custom-hooks/useCookie";
 
-import { onAuthStateChanged, createUserProfileDocument, auth, getDoc } from '../firebase/firebase.utils'
+// import { onAuthStateChanged, createUserProfileDocument, auth, getDoc } from '../firebase/firebase.utils';
 
-export const UserContext = createContext({
-  currentUser: null,
-  setCurrentUser: () => null,
-});
+// export const UserContext = createContext({
+//   user: null,
+// });
 
-export function UserContextProvider({ children }) {
-  // const [cookies, setCookie] = useCookies(['currentUser']);
-  const [ currentUser, setCurrentUser ] = useState(null);
-  const value = { currentUser, setCurrentUser };
+// export function UserContextProvider({ children }) {
+//   const [ user, setUser ] = useState(null);
+//   const value = { user };
   
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async userAuth => {
-      console.log('userContext useEffect running');
+//   useEffect(() => {
+//     const unsubscribe = onAuthStateChanged(auth, async userAuth => {
+//       console.log('userContext useEffect running');
 
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-        const snapShot = await getDoc(userRef);
+//       if (userAuth) {
+//         const userRef = await createUserProfileDocument(userAuth);
+//         const snapShot = await getDoc(userRef);
 
-        const currentUserId = snapShot.id;
+//         const currentUserId = snapShot.id;
+//         setUser({
+//           id: currentUserId,
+//           ...snapShot.data(),
+//         });
+//       } else {
+//         setUser(userAuth);
+//       }
+//     });
 
-        // await createUserDeckDocument(currentUserId);
+//     return unsubscribe;
+//   }, []);
 
-        setCurrentUser({
-          id: currentUserId,
-          ...snapShot.data(),
-        });
-        // setCookie('currentUser', true, { path: '/' });
-      } else {
-        setCurrentUser(userAuth);
-        // setCookie('currentUser', false, { path: '/' });
-      }
-      
-    });
+//   useCookie(user);
 
-    return unsubscribe;
-  }, []);
-
-  useCookie(currentUser);
-
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
-};
+//   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+// };

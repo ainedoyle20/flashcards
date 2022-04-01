@@ -13,6 +13,11 @@ export const toggleDeleteDeckModal = (deleteVals) => ({
     payload: deleteVals,
 });
 
+export const setEditModalVal = (deckId) => ({
+    type: ModalsActionTypes.SET_EDIT_MODAL_VAL,
+    payload: deckId,
+});
+
 export const toggleErrorModal = () => ({
     type: ModalsActionTypes.TOGGLE_ERROR_MODAL,
 });

@@ -1,24 +1,15 @@
-import { Fragment, useState } from 'react';
-
 import { getSpecificPublicDeck } from '../../firebase/firebase.utils';
 
-import DeleteErrorModal from '../../components/decks/delete-error-modal';
 import FlashcardsContainer from '../../components/flashcards/flashcards-container';
 
 function SpecificPublicDeckPage(props) {
-  const [showErrorModal, setShowErrorModal] = useState(false);
-
   return (
-    <Fragment>
-      {showErrorModal ? <DeleteErrorModal setShowDeleteErrorModal={setShowErrorModal} /> : null}
-      <FlashcardsContainer props={props} setShowErrorModal={setShowErrorModal} />
-    </Fragment>
+    <FlashcardsContainer props={props} />
   );
 }
 
 export async function getServerSideProps(context) {
     const currentUser = context.req.cookies.currentUser;
-    const {currentUserId} = context.req.cookies;
     const publicDeckId = context.params.publicDeckId;
   
     if (currentUser === 'false') {
@@ -43,7 +34,6 @@ export async function getServerSideProps(context) {
   
     return {
       props: {
-        currentUserId,
         deck: specificPublicDeck,
       }
     };

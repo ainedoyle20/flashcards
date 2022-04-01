@@ -1,17 +1,12 @@
-// import { useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { signOutUser } from "../../firebase/firebase.utils";
 
-// import { UserContext } from "../../contexts/user.context";
-
 import styles from './main-header.module.css';
 
-function MainHeader() {
-    // const { currentUser } = useContext(UserContext);
-    // console.log('currentUser: ', currentUser);
 
+function MainHeader() {
     const router = useRouter();
     const atAuth = router.route === '/auth' ? true : false;
 
@@ -23,9 +18,11 @@ function MainHeader() {
     }
 
     function signOutUserHandler() {
+        console.log('done');
         signOutUser();
         reroute();
     }
+
     return (
         <header className={atAuth ? styles.hidden : styles.mainheader}>
             <Link href="/decks">My Flashcards</Link>

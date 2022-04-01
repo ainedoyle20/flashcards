@@ -1,10 +1,12 @@
 import {useState} from 'react';
 import { useRouter } from 'next/router';
-import { createDeck, createPublicDeck } from '../../firebase/firebase.utils';
+import { connect } from 'react-redux';
 
-import styles from './deck-modal.module.css';
+import { editDeck } from '../../firebase/firebase.utils';
 
-function DeckModal({props}) {
+import styles from './edit-modal.module.css';
+
+function EditModal({ props, editModalVal }) {
     const [formInput, setFormInput] = useState({
         title: '',
         description: '',
@@ -12,8 +14,6 @@ function DeckModal({props}) {
     });
 
     const router = useRouter();
-    console.log('deckModal props: ', props);
-    console.log('router.route: ', router.route);
 
     function handleChange(e) {
         const { id, value } = e.target;
@@ -25,23 +25,24 @@ function DeckModal({props}) {
         e.preventDefault();
 
         const { currentUserId } = props;
-        console.log('deck modal currentUserId: ', currentUserId);
 
-        if (router.route !== '/public-decks') {
-            try {
-                await createDeck(currentUserId, formInput);
-                setFormInput({
-                    title: '',
-                    description: '',
-                    createdBy: '',
-                });
-                router.reload();
-            } catch (error) {
-                console.log('error in deck modal: ', error.message);
-            }    
+        if (router.route === '/public-decks') {
+            console.log('in pubic-decks!');
+            return;
+            // try {
+            //     // await createDeck(currentUserId, formInput);
+            //     setFormInput({
+            //         title: '',
+            //         description: '',
+            //         createdBy: '',
+            //     });
+            //     router.reload();
+            // } catch (error) {
+            //     console.log('error in edit modal: ', error.message);
+            // }    
         } else {
             try {
-                await createPublicDeck(currentUserId, formInput);
+                await editDeck(currentUserId, editModalVal, formInput);
                 setFormInput({
                     title: '',
                     description: '',
@@ -87,4 +88,8 @@ function DeckModal({props}) {
     )
 }
 
-export default DeckModal;
+const mapStateToProps = ({ modals }) => ({
+    editModalVal: modals.editModalVal,
+});
+
+export default connect(mapStateToProps)(EditModal);

@@ -30,7 +30,7 @@ function FlashcardModal({ currentUserId, deck }) {
                     question: '',
                     answer: '',
                 });
-                router.reload();
+                // router.reload();
             } catch (error) {
                 console.log('error in flashcardmodal: ', error.message);
             }    

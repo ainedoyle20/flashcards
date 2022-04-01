@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
+import { connect } from 'react-redux';
+
 import { checkIsCreator } from '../../firebase/firebase.utils';
+import { toggleFlashcardModal, toggleErrorModal } from '../../redux/modals/modals-actions';
 
 import styles from './flashcard-header.module.css';
 
-function FlashcardHeader({ setShowFlashcardModal, showFlascardModal, setShowList, setShowErrorModal, props }) {
+function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcardModal }) {
     const { currentUserId, deck } = props;
-    console.log('deck.id: ', deck.id);
 
     const router = useRouter();
     
@@ -17,12 +19,12 @@ function FlashcardHeader({ setShowFlashcardModal, showFlascardModal, setShowList
             const isCreator = await checkIsCreator(currentUserId, deck.id);
             if (isCreator) {
                 console.log('is creator!!');
-                setShowFlashcardModal(!showFlascardModal)
+                toggleFlashcardModal();
             } else {
-                setShowErrorModal(true);
+                toggleErrorModal();
             }    
         } else {
-            setShowFlashcardModal(!showFlascardModal)
+            toggleFlashcardModal();
         }
     }
     
@@ -37,4 +39,9 @@ function FlashcardHeader({ setShowFlashcardModal, showFlascardModal, setShowList
     );
 }
 
-export default FlashcardHeader;
+const mapDispatchToProps = dispatch => ({
+    toggleFlashcardModal: () => dispatch(toggleFlashcardModal()),
+    toggleErrorModal: () => dispatch(toggleErrorModal()),
+});
+
+export default connect(null, mapDispatchToProps)(FlashcardHeader);

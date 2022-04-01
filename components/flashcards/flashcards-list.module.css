@@ -1,5 +1,5 @@
 .listcontainer {
-    width: 100%;
+    width: 80%;
     overflow-y: scroll;
     position: absolute;
     top: 9rem;
@@ -16,8 +16,14 @@
     padding: 1.5rem;
     display: flex;
     justify-content: space-between;
+    cursor: default;
 }
 
 .index {
     padding-right: 5px;
+}
+
+.listdelete {
+    margin-left: 15px;
+    cursor: pointer;
 }

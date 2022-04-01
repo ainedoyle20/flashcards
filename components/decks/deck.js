@@ -3,13 +3,13 @@ import { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { checkIsCreator } from '../../firebase/firebase.utils';
-import { toggleDeleteDeckModal } from '../../redux/modals/modals-actions';
+import { toggleDeleteDeckModal, setEditModalVal } from '../../redux/modals/modals-actions';
 
 import DeleteDeckModal from '../decks-modals/delete-deck-modal';
 
 import styles from './deck.module.css';
 
-function Deck({ deck, currentUserId, toggleDeleteDeckModal, toggleErrorModal, showDeleteDeckModal}) {
+function Deck({ deck, currentUserId, toggleDeleteDeckModal, toggleErrorModal, showDeleteDeckModal, setEditModalVal }) {
     const router = useRouter();
 
     function handleClick() {
@@ -48,6 +48,10 @@ function Deck({ deck, currentUserId, toggleDeleteDeckModal, toggleErrorModal, sh
         <Fragment>
             <div className={styles.deck}>
                 <div className={styles.delete}>
+                    <span onClick={() => {
+                        console.log('edit modal');
+                        setEditModalVal(deck.id);
+                    }}>Edit</span>
                     <span onClick={handleDelete}>Delete</span>
                 </div>
                 <div className={styles.deckcontent} onClick={handleClick}>
@@ -73,6 +77,7 @@ const mapStateToProps = ({ modals }) => ({
 const mapDispatchToProps = dispatch => ({
     toggleDeleteDeckModal: (payload) => dispatch(toggleDeleteDeckModal(payload)),
     toggleErrorModal: () => dispatch(toggleErrorModal()),
+    setEditModalVal: (deckId) => dispatch(setEditModalVal(deckId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Deck);

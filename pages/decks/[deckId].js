@@ -1,19 +1,15 @@
-import { Fragment } from 'react';
 import { getSpecificDeck } from '../../firebase/firebase.utils';
 
 import FlashcardsContainer from '../../components/flashcards/flashcards-container';
 
 function SpecificDeckPage(props) {
   return (
-    <Fragment>
-      <FlashcardsContainer props={props} setShowErrorModal={null} />
-    </Fragment>
+    <FlashcardsContainer props={props} />
   );
 }
 
 export async function getServerSideProps(context) {
     const currentUser = context.req.cookies.currentUser;
-    const {currentUserId} = context.req.cookies;
     const deckId = context.params.deckId;
   
     if (currentUser === 'false') {
@@ -38,7 +34,6 @@ export async function getServerSideProps(context) {
   
     return {
       props: {
-        currentUserId,
         deck: specificDeck,
       }
     };

@@ -13,6 +13,7 @@ function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal }) {
     const router = useRouter();
 
     const { deck, currentUserId } = showDeleteDeckModal;
+    console.log('deck: ', deck);
 
     async function confirmedDelete(currentUserId, deckId) {
         if (router.route === '/public-decks') {

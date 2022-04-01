@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     showDeckModal: false,
     showFlashcardModal: false,
     showDeleteDeckModal: null,
+    editModalVal: null,
     showErrorModal: false,
 }
 
@@ -23,6 +24,11 @@ const modalsReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 showDeleteDeckModal: action.payload
+            }
+        case ModalsActionTypes.SET_EDIT_MODAL_VAL:
+            return {
+                ...state,
+                editModalVal: action.payload
             }
         case ModalsActionTypes.TOGGLE_ERROR_MODAL:
             return {

@@ -4,22 +4,26 @@ import { connect } from "react-redux";
 
 import {deletePublicDeck, deleteDeck } from '../../firebase/firebase.utils';
 import { toggleDeleteDeckModal } from '../../redux/modals/modals-actions'
+import { deleteReduxDeck } from "../../redux/decks/decks.actions";
+import { deleteReduxPublicDeck } from '../../redux/publicDecks/public-decks.actions';
 
 import styles from './delete-deck-modal.module.css';
 
-function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal }) {
+function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal, deleteReduxDeck, deleteReduxPublicDeck }) {
     const [inputVal, setInputVal] = useState('');
 
     const router = useRouter();
 
     const { deck, currentUserId } = showDeleteDeckModal;
-    console.log('deck: ', deck);
 
     async function confirmedDelete(currentUserId, deckId) {
         if (router.route === '/public-decks') {
             await deletePublicDeck(deckId);
+            deleteReduxPublicDeck(deckId);
         } else {
             await deleteDeck(currentUserId, deckId);
+            deleteReduxDeck(deckId);
+            toggleDeleteDeckModal();
         }
     }
 
@@ -65,7 +69,9 @@ const mapStateToProps = ({ modals }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    toggleDeleteDeckModal: (payload) => dispatch(toggleDeleteDeckModal(payload))
+    toggleDeleteDeckModal: (payload) => dispatch(toggleDeleteDeckModal(payload)),
+    deleteReduxDeck: (deckId) => dispatch(deleteReduxDeck(deckId)),
+    deleteReduxPublicDeck: (deckId) => dispatch(deleteReduxPublicDeck(deckId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteDeckModal);

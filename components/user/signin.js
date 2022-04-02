@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 
 import { loginWithEmailAndPassword } from '../../firebase/firebase.utils';
 
@@ -11,13 +11,13 @@ function SignIn({ setShowSignin }) {
         password: '',
     });
 
-    const router = useRouter();
-    function reroute() {
-        setTimeout(() => {
-            console.log('reroute timer running!');
-            router.replace('/');
-        }, 1000);
-    }
+    // const router = useRouter();
+    // function reroute() {
+    //     setTimeout(() => {
+    //         console.log('reroute timer running!');
+    //         router.replace('/');
+    //     }, 1000);
+    // }
 
     function handleChange(e) {
         const { value, name } = e.target;
@@ -32,7 +32,7 @@ function SignIn({ setShowSignin }) {
 
         try {
             await loginWithEmailAndPassword(email, password);
-            reroute();
+            // reroute();
         } catch (error) {
             if (error.message === 'Firebase: Error (auth/wrong-password).') {
                 alert('Your password is incorrect. Please try again.');

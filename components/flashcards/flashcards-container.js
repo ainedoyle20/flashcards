@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import { setSpecificDeckId } from '../../redux/decks/decks.actions';
-import { setCurrentUserId } from '../../redux/user/user.actions';
+import { setSpecificDeckId, setFlashcardList } from '../../redux/decks/decks.actions';
 
 import FlashcardHeader from "./flashcard-header";
 import FlashcardModal from '../flashcards-modals/flashcard-modal';
@@ -12,7 +11,7 @@ import FlashcardsList from "./flashcards-list";
 
 import styles from './flashcards-container.module.css';
 
-function FlashcardsContainer({props, setSpecificDeckId, showFlashcardModal, showErrorModal, currentUser }) {
+function FlashcardsContainer({props, setSpecificDeckId, setFlashcardList, showFlashcardModal, showErrorModal, currentUser, flashcardList }) {
     const [showList, setShowList] = useState(false);
 
     const { deck } = props;
@@ -21,14 +20,15 @@ function FlashcardsContainer({props, setSpecificDeckId, showFlashcardModal, show
     useEffect(() => {
         console.log('FlashcardContainer useEffect running with deck.id: ', deck.id);
         setSpecificDeckId(deck.id);
+        setFlashcardList(flashcards);
     }, []);
 
     return (
         <div className={styles.flashcardContainer}>
             <FlashcardHeader setShowList={setShowList} props={props} />
             {
-                flashcards.length && !showList ? <FlashcardsCarousel flashcards={flashcards} /> : (
-                    flashcards.length && showList ? <FlashcardsList flashcards={flashcards} /> : <h1>No available Flashcards!</h1>
+                flashcardList.length && !showList ? <FlashcardsCarousel flashcards={flashcardList} /> : (
+                    flashcardList.length && showList ? <FlashcardsList flashcards={flashcardList} /> : <h1>No available Flashcards!</h1>
                 )
             }
             {
@@ -43,15 +43,16 @@ function FlashcardsContainer({props, setSpecificDeckId, showFlashcardModal, show
     );
 }
 
-const mapStateToProps = ({ modals, user }) => ({
+const mapStateToProps = ({ modals, user, decks }) => ({
     showFlashcardModal: modals.showFlashcardModal,
     showErrorModal: modals.showErrorModal,
     currentUser: user.currentUser,
+    flashcardList: decks.flashcardList,
 });
 
 const mapDispatchToProps = dispatch => ({
     setSpecificDeckId: (specificDeckId) => dispatch(setSpecificDeckId(specificDeckId)),
-    setCurrentUserId: (currentUserId) => dispatch(setCurrentUserId(currentUserId)),
+    setFlashcardList: (flashcardList) => dispatch(setFlashcardList(flashcardList)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlashcardsContainer);

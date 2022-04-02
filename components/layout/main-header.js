@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { connect } from "react-redux";
 
 import { signOutUser } from "../../firebase/firebase.utils";
 
 import styles from './main-header.module.css';
 
 
-function MainHeader() {
+function MainHeader({ currentUser }) {
     const router = useRouter();
     const atAuth = router.route === '/auth' ? true : false;
 
@@ -20,7 +21,11 @@ function MainHeader() {
     function signOutUserHandler() {
         console.log('done');
         signOutUser();
-        reroute();
+    }
+
+    if (currentUser === null && router.route !== '/auth') {
+        console.log('no currentUser in mainheader!!');
+        router.push('/auth');
     }
 
     return (
@@ -40,4 +45,8 @@ function MainHeader() {
     );
 }
 
-export default MainHeader;
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser,
+});
+
+export default connect(mapStateToProps)(MainHeader);

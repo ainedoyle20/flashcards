@@ -10,6 +10,7 @@ function SpecificDeckPage(props) {
 
 export async function getServerSideProps(context) {
     const currentUser = context.req.cookies.currentUser;
+    const currentUserId = context.req.cookies.currentUserId;
     const deckId = context.params.deckId;
   
     if (currentUser === 'false') {

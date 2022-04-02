@@ -1,0 +1,8 @@
+const PublicDecksActionTypes = {
+    SET_PUBLICDECKS_LIST: 'SET_PUBLICDECKS_LIST',
+    ADD_PUBLIC_DECK: 'ADD_PUBLIC_DECK',
+    EDIT_PUBLIC_DECK: 'EDIT_PUBLIC_DECK',
+    DELETE_PUBLIC_DECK: 'DELETE_PUBLIC_DECK',
+}
+
+export default PublicDecksActionTypes;

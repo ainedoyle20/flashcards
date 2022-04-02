@@ -1,12 +1,21 @@
 import { useState } from "react";
+import { connect } from "react-redux";
+import { useRouter } from "next/router";
 
 import SignUp from "./signup";
 import SignIn from "./signin";
 
 import styles from './auth-form.module.css';
 
-function AuthForm() {
+function AuthForm({ currentUser }) {
     const [showSignin, setShowSignin] = useState(false);
+
+    const router = useRouter();
+
+    if (currentUser && router.route === '/auth') {
+        console.log('there IS a user in authForm!!');
+        router.push('/');
+    }
 
     return (
         <div className={styles.authContainer}>
@@ -17,4 +26,8 @@ function AuthForm() {
     );
 }
 
-export default AuthForm;
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser,
+});
+
+export default connect(mapStateToProps)(AuthForm);

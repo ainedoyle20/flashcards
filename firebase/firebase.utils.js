@@ -38,8 +38,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
     if (!snapShot.exists() && userAuth.uid) {
         const { email, displayName } = userAuth;
-        console.log('inside createUserProfileDoc:, email: ', email);
-        console.log('inside createUserProfileDoc:, additionalData: ', additionalData);
         const createdAt = new Date();
 
         try {
@@ -62,7 +60,6 @@ export const registerWithEmailAndPassword = (email, password) => {
 }
 
 export const loginWithEmailAndPassword = async (email, password) => {
-    console.log('loginWithEmailAndPassword');
     return await signInWithEmailAndPassword(auth, email, password);
 }
 
@@ -75,8 +72,6 @@ export const signInWithGoogle = () => signInWithPopup(auth, provider).then((resu
 // Start of flashcard functions
 export async function checkIsCreator(currentUserId, deckId) {
     const specificPublicDeck = await getSpecificPublicDeck(deckId);
-    console.log('specificPublicDeck.createrId: ', specificPublicDeck.createrId);
-    console.log('currentUserId: ', currentUserId);
     return currentUserId === specificPublicDeck.createrId;
 }
 
@@ -84,21 +79,24 @@ async function updatePublicDecks(deckRef, currentUserId, publicDeckObj) {
     const { title, description, createdBy } = publicDeckObj;
     const uniqueId = createUid();
 
-    console.log('currentUserId: ', currentUserId);
+    const createdPublicDeck = {
+        title: title,
+        description: description,
+        createdBy: createdBy,
+        flashcards: [],
+        createrId: currentUserId,
+        id: uniqueId,
+    }
+    
     try {
         await updateDoc(deckRef, {
-            [uniqueId]: {
-                title: title,
-                description: description,
-                createdBy: createdBy,
-                flashcards: [],
-                createrId: currentUserId,
-                id: uniqueId,
-            }
-        })
+            [uniqueId]: createdPublicDeck,
+        });
     } catch (error) {
         console.log('error updating public decks in updatePublicDecks func: ', error.message);
     }
+
+    return createdPublicDeck;
 }
 
 
@@ -107,21 +105,24 @@ async function updateDeckDoc(currentUserId, deckObj) {
 
     const { title, description, createdBy } = deckObj;
     const uniqueId = createUid();
-    // console.log('uniqueId: ', uniqueId);
+
+    const createdDeck = {
+        title: title,
+        description: description,
+        createdBy: createdBy,
+        flashcards: [],
+        id: uniqueId,
+    }
 
     try {
         await updateDoc(deckRef, {
-            [uniqueId]: {
-                title: title,
-                description: description,
-                createdBy: createdBy,
-                flashcards: [],
-                id: uniqueId,
-            }
-        })
+            [uniqueId]: createdDeck,
+        });
     } catch (error) {
         console.log('error updating doc in updateDeckDoc func: ', error.message);
     }
+
+    return createdDeck;
 }
 
 async function setDeckDoc(currentUserId, deckObj) {
@@ -130,16 +131,19 @@ async function setDeckDoc(currentUserId, deckObj) {
     const { title, description, createdBy } = deckObj;
     const uniqueId = createUid();
 
+    const createdDeck = {
+        title,
+        description,
+        createdBy,
+        flashcards: [],
+        id: uniqueId,
+    }
+
     try {
         await setDoc(deckRef, {
-            [uniqueId]: {
-                title,
-                description,
-                createdBy,
-                flashcards: [],
-                id: uniqueId,
-            },
+            [uniqueId]: createdDeck,
         });
+        return createdDeck;
     } catch (error) {
         console.log('error setting deck document inside setDeckDoc: ', error.message);
     }
@@ -161,6 +165,29 @@ async function setDeckDoc(currentUserId, deckObj) {
 //     console.log('got here');
 //     return;
 // }
+
+export async function editPublicDeck(deckId, deckContent) {
+    const publicDecksId = 'PUBLIC_DECKS_UID';
+
+    const decksRef = doc(db, 'public-decks', publicDecksId);
+    const deckSnap = await getDoc(decksRef);
+    const specificDeckData = deckSnap.data()[deckId];
+
+    const { title, description, createdBy } = deckContent;
+
+    try {
+        updateDoc(decksRef, {
+            [deckId]: {
+                ...specificDeckData,
+                title,
+                description,
+                createdBy,
+            }
+        })
+    } catch (error) {
+        console.log('Error editing public deck: ', error.message);
+    }
+}
 
 export async function deletePublicDeck(deckId) {
     const publicDecksId = 'PUBLIC_DECKS_UID';
@@ -209,7 +236,10 @@ export async function updateFlashcardsPublic(currentUserId, deck, flashcardObj) 
     const decksRef = doc(db, 'public-decks', publicDecksId);
     const decksSnap = await getDoc(decksRef);
     const flashcards = decksSnap.data()[deck.id].flashcards;
-    flashcards.push(flashcardObj);
+
+    const filteredFlashcards = flashcards.filter(flashcard => flashcard.question !== flashcardObj.question);
+
+    filteredFlashcards.push(flashcardObj);
 
     try {
         await updateDoc(decksRef, {
@@ -240,7 +270,6 @@ export async function getPublicDecks() {
 
     const decksRef = doc(db, 'public-decks', publicDecksId);
     const decksSnap = await getDoc(decksRef);
-    console.log('decksSnap.data(): ', decksSnap.data().length);
 
     const publicDecks = decksSnap.data();
     return publicDecks;
@@ -283,18 +312,47 @@ export async function updateFlashcards(currentUserId, deck, flashcardObj) {
     const deckSnap = await getDoc(deckRef);
     const deckData = deckSnap.data();
     const flashcards = deckData[deck.id].flashcards;
-    flashcards.push(flashcardObj);
+
+    const filteredFlashcards = flashcards.filter(flashcard => flashcard.question !== flashcardObj.question);
+
+    filteredFlashcards.push(flashcardObj);
 
     try {
         await updateDoc(deckRef, {
             [deck.id]: {
                 ...deck,
-                flashcards: flashcards,
+                flashcards: filteredFlashcards,
             }
         });
     } catch (error) {
         console.log('error updating flashcards: ', error.message);
     }
+}
+
+export async function copyPublicDeck(currentUserId, strippedDeck) {
+    const deckRef = doc(db, 'decks', currentUserId);
+
+    const { title, description, createdBy, flashcards } = strippedDeck;
+
+    const uniqueId = createUid();
+
+    const copiedDeck = {
+        title,
+        description,
+        createdBy,
+        flashcards,
+        id: uniqueId,
+    }
+
+    try {
+        await updateDoc(deckRef, {
+            [uniqueId]: copiedDeck,
+        });
+    } catch (error) {
+        console.log('error copying public deck: ', error.message);
+    }
+
+    return copiedDeck;
 }
 
 export async function editDeck(currentUserId, deckId, deckContent) {
@@ -334,7 +392,6 @@ export async function getSpecificDeck(currentUserId, deckId) {
     const allDecks = await getDecks(currentUserId);
 
     if (!allDecks) {
-        console.log('got in here')
         return;
     }
 
@@ -346,7 +403,8 @@ export async function createPublicDeck(currentUserId, publicDeckObj) {
 
     const decksRef = doc(db, 'public-decks', publicDecksId);
     try {
-        await updatePublicDecks(decksRef, currentUserId, publicDeckObj);
+        const createdPublicDeck = await updatePublicDecks(decksRef, currentUserId, publicDeckObj);
+        return createdPublicDeck;
     } catch (error) {
         console.log('error creating public deck: ', error.message);
     }
@@ -359,22 +417,20 @@ export async function createDeck(currentUserId, deckObj) {
     if (!decksSnap.exists()) {
         try {
             console.log('decksSnap does NOT exist');
-            await setDeckDoc(currentUserId, deckObj);
+            const createdDeck = await setDeckDoc(currentUserId, deckObj);
+            return createdDeck;
         } catch (error) {
             console.log('error creating user deck doc: ', error.message);
         }
     } else {
         try {
             console.log('decksSnap DOES exist');
-            await updateDeckDoc(currentUserId, deckObj);
+            const createdDeck = await updateDeckDoc(currentUserId, deckObj);
+            return createdDeck;
         } catch (error) {
             console.log('error updating deck doc', error.message);
         }
     }
-}
-
-export const tempFunc = () => {
-    return 'Hello from firbase!';
 }
 
 export {onAuthStateChanged, onSnapshot, auth, getDoc};

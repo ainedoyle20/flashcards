@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 
 import { createUserProfileDocument, registerWithEmailAndPassword } from '../../firebase/firebase.utils';
 
@@ -13,13 +13,13 @@ function SignUp({ setShowSignin }) {
         confirmPassword: '',
     });
 
-    const router = useRouter();
-    function reroute() {
-        setTimeout(() => {
-            console.log('reroute timer running!');
-            router.replace('/');
-        }, 1000);
-    }
+    // const router = useRouter();
+    // function reroute() {
+    //     setTimeout(() => {
+    //         console.log('reroute timer running!');
+    //         router.replace('/');
+    //     }, 1000);
+    // }
 
     function handleChange(e) {
         const { value, name } = e.target;
@@ -39,8 +39,9 @@ function SignUp({ setShowSignin }) {
 
         try {
             const { user } = await registerWithEmailAndPassword(email, password);
-            reroute();
+            // reroute();
             await createUserProfileDocument(user, { displayName: displayName });
+            console.log('got here');
         } catch (error) {
             console.log('error: ', error);
             alert('This email is already in use!');

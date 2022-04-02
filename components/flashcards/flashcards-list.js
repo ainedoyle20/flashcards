@@ -8,19 +8,21 @@ import DeleteErrorModal from '../decks-modals/delete-error-modal';
 
 import styles from './flashcards-list.module.css';
 
-function FlashcardsList({ flashcards, specificDeckId, currentUserId, toggleErrorModal, showErrorModal }) {
+function FlashcardsList({ flashcards, specificDeckId, currentUser, toggleErrorModal, showErrorModal }) {
     const router = useRouter();
 
     async function handleDelete(flashcardQuestion) {
+        console.log('flashcardQuestion: ', flashcardQuestion);
         if (router.route === '/decks/[deckId]') {
             try {
-                await deleteFlashcard(currentUserId, specificDeckId, flashcardQuestion);
+                console.log('values: ', currentUser.id, specificDeckId, flashcardQuestion);
+                await deleteFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
             } catch (error) {
                 console.log('error in handleDelete: ', error.message);
             } 
         } else {
             try {
-                const isCreator = await deletePublicFlashcard(currentUserId, specificDeckId, flashcardQuestion);
+                const isCreator = await deletePublicFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
                 console.log('isCreator: ', isCreator);
                 if (!isCreator) {
                     console.log('got here');
@@ -66,7 +68,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = ({ decks, user, modals }) => ({
     specificDeckId: decks.specificDeckId,
-    currentUserId: user.currentUserId,
+    currentUser: user.currentUser,
     showErrorModal: modals.showErrorModal,
 });
 

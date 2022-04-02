@@ -17,3 +17,11 @@
 .flashcardModal input {
     width: 60%;
 }
+
+.duplicate {
+    color: red;
+}
+
+.modalbuttons {
+    display: flex;
+}

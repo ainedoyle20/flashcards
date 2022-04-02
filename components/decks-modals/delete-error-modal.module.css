@@ -1,7 +1,7 @@
 .errormodal {
     border: 2px solid black;
     position: absolute;
-    margin: 0 40vw;
+    top: 30vh;
+    left: 40vw;
     background-color: white;
-    z-index: 100;
 }

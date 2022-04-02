@@ -1,30 +1,24 @@
 import { Fragment } from "react";
 import { useRouter } from "next/router";
+import { connect } from "react-redux";
 
 import Deck from "./deck";
 
-function DecksGrid({ props }) {
-    const { decks, currentUserId } = props;
+function DecksGrid({ deckList, publicDecksList }) {
 
     const router = useRouter();
     const isPublicGrid = router.route === '/public-decks' ? true : false;
 
-    const decksArray = [];
-    if (decks !== undefined) {
-      for (let key in decks) {
-        decksArray.push({ ...decks[key], createrId: null });
-      }
-    }
+    const decks = isPublicGrid ? publicDecksList : deckList;
 
     return (
         <Fragment>
             {
-                decksArray.length 
-                ? decksArray.map(deck => (
+                decks.length 
+                ? decks.map(deck => (
                     <Deck 
                         key={deck.id} 
-                        deck={deck} 
-                        currentUserId={currentUserId}
+                        deck={deck}
                     />
                 ))
                 : isPublicGrid 
@@ -35,4 +29,9 @@ function DecksGrid({ props }) {
     );
 }
 
-export default DecksGrid;
+const mapStateToProps = ({ decks, publicDecks }) => ({
+    deckList: decks.deckList,
+    publicDecksList: publicDecks.publicDecksList,
+});
+
+export default connect(mapStateToProps)(DecksGrid);

@@ -21,3 +21,8 @@ export const setEditModalVal = (deckId) => ({
 export const toggleErrorModal = () => ({
     type: ModalsActionTypes.TOGGLE_ERROR_MODAL,
 });
+
+export const toggleCopyModal = (specificDeck) => ({
+    type: ModalsActionTypes.TOGGLE_COPY_MODAL,
+    payload: specificDeck,
+});

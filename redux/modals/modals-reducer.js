@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     showDeleteDeckModal: null,
     editModalVal: null,
     showErrorModal: false,
+    showCopyModal: null,
 }
 
 const modalsReducer = (state=INITIAL_STATE, action) => {
@@ -34,6 +35,11 @@ const modalsReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 showErrorModal: !state.showErrorModal
+            }
+        case ModalsActionTypes.TOGGLE_COPY_MODAL:
+            return {
+                ...state,
+                showCopyModal: action.payload
             }
         default:
             return state;

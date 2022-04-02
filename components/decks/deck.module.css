@@ -32,6 +32,10 @@
     display: none;
 }
 
+.copy {
+    margin-right: 45%;
+}
+
 .deck:hover span {
     display: flex;
 }

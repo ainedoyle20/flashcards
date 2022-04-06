@@ -4,21 +4,15 @@ import { connect } from 'react-redux';
 import { checkIsCreator } from '../../firebase/firebase.utils';
 import { toggleFlashcardModal, toggleErrorModal } from '../../redux/modals/modals-actions';
 
-import styles from './flashcard-header.module.css';
-
-function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcardModal }) {
-    const { currentUserId, deck } = props;
+function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcardModal, currentUser }) {
+    const { deck } = props;
 
     const router = useRouter();
     
-    // NOTE: remove createrId from deck when bringing it to client side
-    
     async function handleAddFlashcard() {
-        console.log('clicked');
         if (router.route === '/public-decks/[publicDeckId]') {
-            const isCreator = await checkIsCreator(currentUserId, deck.id);
+            const isCreator = await checkIsCreator(currentUser.id, deck.id);
             if (isCreator) {
-                console.log('is creator!!');
                 toggleFlashcardModal();
             } else {
                 toggleErrorModal();
@@ -29,19 +23,23 @@ function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcard
     }
     
     return (
-        <div className={styles.flashcardheader}> 
-            <div>
-                <span onClick={() => setShowList(false)}>cards</span>
-                <span onClick={() => setShowList(true)}>list</span>
+        <div className="w-full flex justify-between"> 
+            <div className="p-3.5">
+                <span className="mr-3.5 cursor-pointer text-[15px] hover:text-base" onClick={() => setShowList(false)}>cards</span>
+                <span className="cursor-pointer text-[15px] hover:text-base" onClick={() => setShowList(true)}>list</span>
             </div>
-            <button onClick={handleAddFlashcard}>Add Flashcard</button>
+            <span className="p-3.5 cursor-pointer text-[15px] hover:text-base" onClick={handleAddFlashcard}>Add Flashcard</span>
         </div>
     );
 }
+
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser,
+});
 
 const mapDispatchToProps = dispatch => ({
     toggleFlashcardModal: () => dispatch(toggleFlashcardModal()),
     toggleErrorModal: () => dispatch(toggleErrorModal()),
 });
 
-export default connect(null, mapDispatchToProps)(FlashcardHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(FlashcardHeader);

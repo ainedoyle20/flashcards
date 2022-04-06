@@ -245,7 +245,7 @@ export async function updateFlashcardsPublic(currentUserId, deck, flashcardObj) 
         await updateDoc(decksRef, {
             [deck.id]: {
                 ...deck,
-                flashcards: flashcards,
+                flashcards: filteredFlashcards,
             }
         });
     } catch (error) {
@@ -330,8 +330,6 @@ export async function updateFlashcards(currentUserId, deck, flashcardObj) {
 }
 
 export async function copyPublicDeck(currentUserId, strippedDeck) {
-    const deckRef = doc(db, 'decks', currentUserId);
-
     const { title, description, createdBy, flashcards } = strippedDeck;
 
     const uniqueId = createUid();
@@ -344,15 +342,30 @@ export async function copyPublicDeck(currentUserId, strippedDeck) {
         id: uniqueId,
     }
 
+    const decksRef = doc(db, 'decks', currentUserId);
+    const decksSnap = await getDoc(decksRef);
+
+    if (!decksSnap.exists()) {
+        try {
+            console.log('decksSnap does NOT exist for copy');
+            const createdDeck = await setDoc(decksRef, {
+                [uniqueId]: copiedDeck,
+            });
+            return createdDeck;
+        } catch (error) {
+            console.log('error copying public deck: ', error.message);
+        }
+    }
+
     try {
-        await updateDoc(deckRef, {
+        console.log('decksSnap DOES exist for copy');
+        const createdDeck = await updateDoc(decksRef, {
             [uniqueId]: copiedDeck,
         });
+        return createdDeck;
     } catch (error) {
         console.log('error copying public deck: ', error.message);
     }
-
-    return copiedDeck;
 }
 
 export async function editDeck(currentUserId, deckId, deckContent) {

@@ -1,8 +1,16 @@
+import Head from 'next/head';
+import { Fragment } from 'react';
 import Hero from '../components/home/hero';
 
 function Home(props) {
   return (
-    <Hero props={props} />
+    <Fragment>
+      <Head>
+        <title>Home</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <Hero props={props} />
+    </Fragment>
   );
 }
 
@@ -18,7 +26,6 @@ export async function getServerSideProps(context) {
     }
   }
 
-  console.log('currentUser in /: ', currentUser);
   if (currentUser === undefined) {
     currentUser = null;
   }

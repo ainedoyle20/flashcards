@@ -1,75 +1,37 @@
-import { useRouter } from 'next/router';
 import { connect } from 'react-redux';
 
-import { deleteFlashcard, deletePublicFlashcard } from '../../firebase/firebase.utils';
 import { toggleErrorModal } from '../../redux/modals/modals-actions';
 
-import DeleteErrorModal from '../decks-modals/delete-error-modal';
+import DeleteErrorModal from '../modals/delete-error-modal';
+import FlashcardListItem from './flashcard-list-item';
 
-import styles from './flashcards-list.module.css';
-
-function FlashcardsList({ flashcards, specificDeckId, currentUser, toggleErrorModal, showErrorModal }) {
-    const router = useRouter();
-
-    async function handleDelete(flashcardQuestion) {
-        console.log('flashcardQuestion: ', flashcardQuestion);
-        if (router.route === '/decks/[deckId]') {
-            try {
-                console.log('values: ', currentUser.id, specificDeckId, flashcardQuestion);
-                await deleteFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
-            } catch (error) {
-                console.log('error in handleDelete: ', error.message);
-            } 
-        } else {
-            try {
-                const isCreator = await deletePublicFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
-                console.log('isCreator: ', isCreator);
-                if (!isCreator) {
-                    console.log('got here');
-                    toggleErrorModal();
-                    return;
-                }
-            } catch (error) {
-                console.log('error in handleDelete: ', error.message);
-            } 
-        }
-    }
+function FlashcardsList({ flashcards, showErrorModal, toggleErrorModal }) {
 
     return (
-        <div className={styles.listcontainer}>
-            <ul className={styles.list}>
+        <div className="w-4/5 max-h-[70vh] overflow-y-scroll absolute top-36 shadow-[1px_2px_2px_3px_rgba(180,180,180)] lg:w-3/4 xl:w-3/5">
+            <ul className="list-none p-0 m-0">
                 {
                     flashcards.map((flashcard, index) => {
                         return (
-                            <li key={Math.floor(Math.random() * 10000)}>
-                                <div>
-                                    <span className={styles.index}>{index + 1}.</span>
-                                    <span>{flashcard.question}</span>
-                                </div>
-                                <div>
-                                    <span>{flashcard.answer}</span>
-                                    <span className={styles.listdelete} onClick={() => handleDelete(flashcard.question)}>Delete</span>
-                                </div>
-                            </li>
+                            <FlashcardListItem key={Math.floor(Math.random() * 100000)} flashcard={flashcard} index={index} />
                         );
                     })
                 }
             </ul>
-            {
-                showErrorModal ? <DeleteErrorModal /> : null
+            {showErrorModal 
+                ? <Fragment><ModalScreen toggleModal={() => toggleErrorModal()} /><DeleteErrorModal /></Fragment>
+                : null
             }
         </div>
     );
 }
 
-const mapDispatchToProps = dispatch => ({
-    toggleErrorModal: () => dispatch(toggleErrorModal()),
+const mapStateToProps = ({ modals }) => ({
+    showErrorModal: modals.showErrorModal,
 });
 
-const mapStateToProps = ({ decks, user, modals }) => ({
-    specificDeckId: decks.specificDeckId,
-    currentUser: user.currentUser,
-    showErrorModal: modals.showErrorModal,
+const mapDispatchToProps = dispatch => ({
+    toggleErrorModal: () => dispatch(toggleErrorModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlashcardsList);

@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 
@@ -12,7 +11,7 @@ function DecksGrid({ deckList, publicDecksList }) {
     const decks = isPublicGrid ? publicDecksList : deckList;
 
     return (
-        <Fragment>
+        <div className="grid grid-cols-fluid gap-4 p-3.5 sm:p-5">
             {
                 decks.length 
                 ? decks.map(deck => (
@@ -22,10 +21,10 @@ function DecksGrid({ deckList, publicDecksList }) {
                     />
                 ))
                 : isPublicGrid 
-                    ? <h2>No Public Decks Available</h2>
-                    : <h2>No Decks Available</h2>
+                    ? <h2 className="text-lg">No Public Decks Available. <br /> Be the first to create a public deck!</h2>
+                    : <h2 className="text-lg">No Decks Available <br /> Create your first deck to get started! </h2>
             }
-        </Fragment>
+        </div>
     );
 }
 

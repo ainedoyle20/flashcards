@@ -18,7 +18,7 @@ function AuthForm({ currentUser }) {
     }
 
     return (
-        <div className={styles.authContainer}>
+        <div className="w-screen h-screen flex justify-center">
             {
                 showSignin ? <SignIn setShowSignin={setShowSignin} /> : <SignUp setShowSignin={setShowSignin} /> 
             }

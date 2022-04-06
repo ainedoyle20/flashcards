@@ -1,11 +1,6 @@
-import { Fragment, useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 import Flashcard from './flashcard';
-import IncrementArrow from '../../public/images/increment-arrow.svg';
-import DecrementArrow from '../../public/images/decrement-arrow.svg';
-
-import styles from './flashcards-carousel.module.css';
 
 function FlashcardsCarousel({ flashcards }) {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -16,7 +11,6 @@ function FlashcardsCarousel({ flashcards }) {
 
     useEffect(() => {
         setActiveFlashcard(flashcards[activeIndex]);
-        console.log('running carousel useEffect!');
     }, [activeIndex])
 
     function incrementActiveIndex() {
@@ -38,20 +32,33 @@ function FlashcardsCarousel({ flashcards }) {
     if (!activeFlashcard) return <p>Loading...</p>
 
     return (
-        <Fragment>
-            <span>{activeIndex + 1}/{totalLength}</span>
-            <div className={styles.carousel}>
-                <span onClick={() => decrementActiveIndex()}>
-                    <Image src={DecrementArrow} alt='back arrow' width={40} height={40} />
+        <div className="w-full flex flex-col items-center mt-[10vh]">
+            <div className="flex justify-between items-center w-[90vw] mb-2 sm:w-[80vw] md:justify-center">
+                <span className="text-2xl text-[#c0c0c0] cursor-pointer md:hidden" 
+                    onClick={() => decrementActiveIndex()}
+                >
+                    &#8920;
                 </span>
-                    <Flashcard 
-                        flashcard={activeFlashcard}
-                    />
-                <span onClick={() => incrementActiveIndex()}>
-                    <Image src={IncrementArrow} alt='forwards arrow' width={40} height={40} />
+                <span>{activeIndex + 1}/{totalLength}</span>
+                <span className="text-2xl text-[#c0c0c0] cursor-pointer md:hidden" onClick={() => incrementActiveIndex()}>
+                    &#8921;
+                </span>    
+            </div>
+            
+            <div className="flex items-center mt-[1%]">
+                <span className="text-4xl text-[#c0c0c0] border-l-[1px] border-[#c0c0c0] cursor-pointer mr-20 hidden md:flex" 
+                    onClick={() => decrementActiveIndex()}
+                >
+                    &#8920;
                 </span>
+                <Flashcard 
+                    flashcard={activeFlashcard}
+                />
+                <span className="text-4xl text-[#c0c0c0] border-r-[1px] border-[#c0c0c0] cursor-pointer ml-20 hidden md:flex" onClick={() => incrementActiveIndex()}>
+                    &#8921;
+                </span> 
             </div>    
-        </Fragment>
+        </div>
         
     );
 }

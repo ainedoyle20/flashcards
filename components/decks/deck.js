@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { checkIsCreator } from '../../firebase/firebase.utils';
 import { toggleDeleteDeckModal, setEditModalVal, toggleErrorModal, toggleCopyModal } from '../../redux/modals/modals-actions';
 
-import styles from './deck.module.css';
-
 function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setEditModalVal, toggleCopyModal }) {
     const router = useRouter();
 
@@ -59,21 +57,25 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
 
     return (
         <Fragment>
-            <div className={styles.deck}>
-                <div className={styles.delete}>
+            <div className="flex flex-col items-center cursor-pointer h-[30vh] shadow-[1px_2px_2px_3px_rgba(180,180,180)] group sm:max-w-[50vw] md:h-[35vh]">
+                <div className="flex justify-between items-center w-full h-[15%]">
+                    <div className="w-2/4 flex">
                     {
                         router.route === '/public-decks' 
-                        ? <span className={styles.copy} onClick={() => toggleCopyModal(deck)}>Copy</span>
+                        ? <span className="px-[10%] hidden group-hover:flex" onClick={() => toggleCopyModal(deck)}>Copy</span>
                         : null
                     }
-                    <span onClick={handleEdit}>Edit</span>
-                    <span onClick={handleDelete}>Delete</span>
+                    </div>
+                    <div className=" w-2/4 flex justify-end">
+                        <span className="px-[10%] hidden group-hover:flex" onClick={handleEdit}>Edit</span>
+                        <span className="px-[10%] hidden group-hover:flex" onClick={handleDelete}>Delete</span>
+                    </div>
                 </div>
-                <div className={styles.deckcontent} onClick={handleClick}>
-                    <h2>{deck.title}</h2>
-                    <span>{deck.description}</span>
+                <div className="flex flex-col items-center h-5/6 w-full" onClick={handleClick}>
+                    <h2 className="mt-4 text-xl md:mt-[6vh]">{deck.title}</h2>
+                    <span className="p-5">{deck.description}</span>
                     {
-                        deck.createrId === null ? <span>Created By: {deck.createdBy}</span> : null
+                        deck.createrId === null ? <span className="text-sm">Created By: {deck.createdBy}</span> : null
                     }
                 </div>
             </div>   

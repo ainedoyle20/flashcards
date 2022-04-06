@@ -1,9 +1,6 @@
 import { useState } from 'react';
-// import { useRouter } from 'next/router';
 
-import { createUserProfileDocument, registerWithEmailAndPassword } from '../../firebase/firebase.utils';
-
-import styles from './signup.module.css';
+import { createUserProfileDocument, registerWithEmailAndPassword, signInWithGoogle } from '../../firebase/firebase.utils';
 
 function SignUp({ setShowSignin }) {
     const [formInput, setFormInput] = useState({
@@ -12,14 +9,6 @@ function SignUp({ setShowSignin }) {
         password: '',
         confirmPassword: '',
     });
-
-    // const router = useRouter();
-    // function reroute() {
-    //     setTimeout(() => {
-    //         console.log('reroute timer running!');
-    //         router.replace('/');
-    //     }, 1000);
-    // }
 
     function handleChange(e) {
         const { value, name } = e.target;
@@ -39,7 +28,6 @@ function SignUp({ setShowSignin }) {
 
         try {
             const { user } = await registerWithEmailAndPassword(email, password);
-            // reroute();
             await createUserProfileDocument(user, { displayName: displayName });
             console.log('got here');
         } catch (error) {
@@ -50,49 +38,55 @@ function SignUp({ setShowSignin }) {
     }
 
     return (
-        <div className={styles.container}>
-            <div className={styles.formContainer}>
-                <form className={styles.form} onSubmit={handleSubmit}>
-                    <label>Your displayName</label>
+        <div className="flex flex-col items-center w-full">
+            <div 
+                className="flex flex-col justify-center items-center w-4/5 mt-20 mb-10 pb-5 rounded-md shadow-[1px_3px_3px_3px_rgba(199,199,199)] md:w-2/4 md:mt-[14vh] lg:w-1/3 "
+            >
+                <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center w-4/5 mt-8 mb-2">
+                    <label className="p-1">Your displayName</label>
                     <input 
+                        className="w-full p-1 mb-1 border border-[#c7c7c7] focus:outline-0 md:w-4/5"
                         name="displayName" 
                         type="text" 
                         value={formInput.displayName}
                         onChange={handleChange}
                         required 
                     />
-                    <label>Your Email</label>
+                    <label className="p-1">Your Email</label>
                     <input 
+                        className="w-full p-1 mb-1 border border-[#c7c7c7] focus:outline-0 md:w-4/5"
                         name="email" 
                         type="email" 
                         value={formInput.email}
                         onChange={handleChange}
                         required 
                     />
-                    <label>Your Password</label>
+                    <label className="p-1">Your Password</label>
                     <input 
+                        className="w-full p-1 mb-1 border border-[#c7c7c7] focus:outline-0 md:w-4/5"
                         name="password" 
                         type="password" 
                         value={formInput.password}
                         onChange={handleChange}
                         required 
                     />
-                    <label>Confirm Password</label>
+                    <label className="p-1">Confirm Password</label>
                     <input 
+                        className="w-full p-1 mb-1 border border-[#c7c7c7] focus:outline-0 md:w-4/5"
                         name="confirmPassword" 
                         type="password" 
                         value={formInput.confirmPassword}
                         onChange={handleChange}
                         required 
                     />
-                    <button type="submit">Sign Up</button>
+                    <button className="mt-5 mb-0 underline" type="submit">Sign Up</button>
                 </form>
                 <button onClick={() => setShowSignin(true)}>Or click here to Login</button>
             </div>
 
             <p>Or</p>
 
-            <button className={styles.google}>Continue with Google</button>
+            <button className="mt-8 underline" onClick={() => signInWithGoogle()}>Continue with Google</button>
         </div>
     );
 }

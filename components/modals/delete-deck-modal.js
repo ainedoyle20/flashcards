@@ -7,8 +7,6 @@ import { toggleDeleteDeckModal } from '../../redux/modals/modals-actions'
 import { deleteReduxDeck } from "../../redux/decks/decks.actions";
 import { deleteReduxPublicDeck } from '../../redux/publicDecks/public-decks.actions';
 
-import styles from './delete-deck-modal.module.css';
-
 function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal, deleteReduxDeck, deleteReduxPublicDeck }) {
     const [inputVal, setInputVal] = useState('');
 
@@ -41,25 +39,31 @@ function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal, deleteRed
     }
 
     return (
-        <div className={styles.deletemodal}>
-            <h2>Warning</h2>
+        <div className="flex flex-col items-center p-5 w-[60vw] min-h-[250px] absolute top-[30vh] left-[20vw] bg-[#e4e4e4] text-extrabold rounded-2xl cursor-default md:w-[50vw] md:left-[25vw] lg:w-[40vw] lg:left-[30vw] xl:max-h-[350px]">
+            <h2 className="my-3.5 text-xl text-black">Warning</h2>
             <p>
-                You are about to delete a deck. <br/> 
-                Once a deck is deleted it is lost forever.
+                You are about to delete deck: "{deck.title}".
             </p>
-            <div>
-                <label htmlFor="delete-input">Please enter the deck title to confirm deletion.</label>
-                <input
-                    id="delete-input"
-                    type="text"
-                    value={inputVal}
-                    onChange={handleChange}
-                    placeholder={deck.title}
-                    required
-                />
-                <button onClick={handleClick}>DELETE</button>
+
+            <p className="mt-1 mb-3.5">Once a deck is deleted it is lost forever.</p>
+
+            <div className="w-full flex flex-col items-center">
+                <label className="text-sm" htmlFor="delete-input">Enter deck title to confirm deletion.</label>
+                <div>
+                    <input
+                        className="border-[1px] border-black focus:outline-none"
+                        id="delete-input"
+                        type="text"
+                        value={inputVal}
+                        onChange={handleChange}
+                        placeholder={deck.title}
+                        required
+                    />
+                    <button className="ml-1 underline" onClick={handleClick}>DELETE</button>
+                </div>    
             </div>
-            <button onClick={() => toggleDeleteDeckModal(null)}>Cancel</button>
+            
+            <button className="mt-[5%] underline text-sm" onClick={() => toggleDeleteDeckModal(null)}>Cancel</button>
         </div>
     );
 }

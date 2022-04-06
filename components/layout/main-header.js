@@ -4,19 +4,9 @@ import { connect } from "react-redux";
 
 import { signOutUser } from "../../firebase/firebase.utils";
 
-import styles from './main-header.module.css';
-
-
 function MainHeader({ currentUser }) {
     const router = useRouter();
     const atAuth = router.route === '/auth' ? true : false;
-
-    function reroute() {
-        setTimeout(() => {
-            console.log('logout reroute is running');
-            router.replace('/auth');
-        }, 1000);
-    }
 
     function signOutUserHandler() {
         console.log('done');
@@ -29,15 +19,31 @@ function MainHeader({ currentUser }) {
     }
 
     return (
-        <header className={atAuth ? styles.hidden : styles.mainheader}>
-            <Link href="/decks">My Flashcards</Link>
+        <header className={atAuth ? 'hidden' : 'w-screen h-12 flex items-center justify-between p-2 m-0 shadow-[0px_0px_0px_2px_rgba(199,199,199)] sm:h-20 sm:p-6'}>
+            <Link href="/decks">
+                <a className={
+                    router.route === '/decks' || router.route === '/decks/[deckId]' 
+                    ? 'px-2 sm:text-2xl sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px] underline' 
+                    : "px-2 sm:text-2xl sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]"
+                } > 
+                    My Decks
+                </a>
+            </Link>
             <nav>
-                <ul>
+                <ul className="flex">
                     <li>
-                        <Link href="/public-decks">Public-Decks</Link>
+                        <Link href="/public-decks">
+                            <a className={
+                                router.route === '/public-decks' || router.route === '/public-decks/[publicDeckId]' 
+                                ? 'px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px] underline' 
+                                : "px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]"
+                            }>
+                                Public-Decks
+                            </a>   
+                        </Link>
                     </li>
                     <li>
-                        <div onClick={signOutUserHandler}>Logout</div>
+                        <div className="px-2 sm:text-2xl cursor-pointer sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]" onClick={signOutUserHandler}>Logout</div>
                     </li>
                 </ul>
             </nav>
@@ -50,3 +56,5 @@ const mapStateToProps = ({ user }) => ({
 });
 
 export default connect(mapStateToProps)(MainHeader);
+
+//className={router.route === '/decks' || router.route === '/decks/[deckId]' ? styles.active : styles.link}

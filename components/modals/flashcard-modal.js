@@ -6,9 +6,7 @@ import { updateFlashcards, updateFlashcardsPublic } from '../../firebase/firebas
 import { toggleFlashcardModal } from '../../redux/modals/modals-actions';
 import { addReduxFlashcard } from '../../redux/decks/decks.actions';
 
-import styles from './flashcard-modal.module.css';
-
-function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFlashcard }) {
+function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFlashcard, flashcardList }) {
     const [formInput, setFormInput] = useState({
         question: '',
         answer: '',
@@ -18,9 +16,14 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
 
     const router = useRouter();
 
-    function checkForFlashcardDuplicates(deck, flashcardQuestion) {
-        const currentFlashcards = deck.flashcards;
-        const isDuplicate = currentFlashcards.find(flashcard => flashcard.question === flashcardQuestion);
+    function checkForFlashcardDuplicates(flashcardList, flashcardQuestion) {
+        let isDuplicate = false;
+
+        for (let char of flashcardList) {
+            if (char.question === flashcardQuestion) {
+                isDuplicate = true;
+            }
+        }
 
         if (isDuplicate) {
             setDuplicate(true);
@@ -30,14 +33,14 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
     function handleChange(e) {
         const { id, value } = e.target;
 
-        if (e.target.id === 'answer') {
-            checkForFlashcardDuplicates(deck, formInput.question);
+        if (e.target.id === 'answer' && ranCheck === false) {
+            checkForFlashcardDuplicates(flashcardList, formInput.question);
             setRanCheck(true);
-        } else {
-            if (ranCheck === true) {
-              setRanCheck(false);
-              setDuplicate(false);  
-            }
+        }
+
+        if (e.target.id === 'question' && ranCheck === true) {
+            setRanCheck(false);
+            setDuplicate(false);  
         }
 
         setFormInput({ ...formInput, [id]: value });
@@ -60,11 +63,8 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
             }    
         } else {
             try {
-                const isCreator = await updateFlashcardsPublic(currentUserId, deck, formInput);
-                if (isCreator) addReduxFlashcard(formInput);
-                if (!isCreator) {
-                    alert('You cannot update a public deck unless you created it. However, if you add the deck to your personal decks, you can then alter it.');
-                }
+                await updateFlashcardsPublic(currentUserId, deck, formInput);
+                addReduxFlashcard(formInput);
                 setFormInput({
                     question: '',
                     answer: '',
@@ -77,10 +77,14 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
     }
 
     return (
-    <div className={styles.flashcardModal}>
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="question">Question:</label>
+    <div className="flex flex-col items-center p-4 w-[60vw] h-auto absolute top-[30vh] left-[20vw] bg-[#e4e4e4] text-extrabold rounded-2xl cursor-default sm:w-[50vw] sm:left-[25vw] md:w-[40vw] md:left-[30vw] lg:w-[30vw] lg:left-[35vw]">
+        <form 
+            className="flex flex-col items-center w-full my-2"
+            onSubmit={handleSubmit}
+        >
+            <label className="mt-1 text-lg" htmlFor="question">Question:</label>
             <input 
+                className="m-1 w-3/4 sm:w-3/5 focus:outline-none"
                 id='question' 
                 type='text'
                 value={formInput.question}
@@ -88,23 +92,24 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
                 required
             />
             { duplicate ?
-             <span className={styles.duplicate}>
+             <span>
                 This flashcard already exists! If you add this flashcard it will override the flashcard that already exists.
             </span>  
             : null 
             }
             
-            <label htmlFor="answer">Answer:</label>
-            <input 
+            <label className="mt-1 text-lg" htmlFor="answer">Answer:</label>
+            <textarea 
+                className="m-1 h-10 max-h-14 w-3/4 max-w-3/4 sm:w-3/5 sm:max-w-3/5 focus:outline-none"
                 id='answer' 
                 type='text'
                 value={formInput.answer}
                 onChange={handleChange}
                 required
             />
-            <div className={styles.modalbuttons}>   
-                <button type="button" onClick={() => toggleFlashcardModal()}>Cancel</button>
-                <button>Add Flashcard</button>
+            <div className="w-3/5 sm:w-[45%] pt-3.5 flex justify-between">   
+                <button className="underline text-sm" type="button" onClick={() => toggleFlashcardModal()}>Cancel</button>
+                <button className="underline text-sm">Add</button>
             </div>
             
         </form>
@@ -112,9 +117,13 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
     );
 }
 
+const mapStateToProps = ({ decks }) => ({
+    flashcardList: decks.flashcardList,
+});
+
 const mapDispatchToProps = dispatch => ({
     toggleFlashcardModal: () => dispatch(toggleFlashcardModal()),
     addReduxFlashcard: (flashcard) => dispatch(addReduxFlashcard(flashcard)),
-})
+});
 
-export default connect(null, mapDispatchToProps)(FlashcardModal);
+export default connect(mapStateToProps, mapDispatchToProps)(FlashcardModal);

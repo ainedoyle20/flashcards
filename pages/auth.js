@@ -1,8 +1,17 @@
+import { Fragment } from "react";
+import Head from "next/head";
 import AuthForm from "../components/user/auth-form";
 
-function Auth(props) {
+function Auth() {
     return (
-        <AuthForm />
+        <Fragment>
+            <Head>
+                <title>SignIn</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
+            <AuthForm />
+        </Fragment>
+        
     );
 }
 

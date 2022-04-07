@@ -4,7 +4,14 @@ import { useRouter } from "next/router";
 
 import { setDeckList } from "../../redux/decks/decks.actions";
 import { setPublicDecksList } from "../../redux/publicDecks/public-decks.actions";
-import { toggleDeckModal, setEditModalVal, toggleCopyModal, toggleErrorModal, toggleDeleteDeckModal } from '../../redux/modals/modals-actions';
+import { 
+    toggleDeckModal, 
+    setEditModalVal, 
+    toggleCopyModal, 
+    toggleErrorModal, 
+    toggleDeleteDeckModal,
+    togglePostModal, 
+} from '../../redux/modals/modals-actions';
 
 import DecksHeader from "./decks-header";
 import DecksGrid from "./decks-grid";
@@ -14,6 +21,7 @@ import DeleteErrorModal from '../modals/delete-error-modal';
 import EditModal from '../modals/edit-modal';
 import DeleteDeckModal from "../modals/delete-deck-modal";
 import CopyModal from "../modals/copy-modal";
+import PostModal from "../modals/post-modal";
 
 
 function DecksContainer({ 
@@ -24,19 +32,20 @@ function DecksContainer({
     setDeckList, 
     showDeleteDeckModal, 
     setPublicDecksList, 
-    showCopyModal, 
+    showCopyModal,
+    showPostModal, 
     toggleDeckModal,
     toggleCopyModal,
     toggleDeleteDeckModal,
     setEditModalVal,
     toggleErrorModal,
+    togglePostModal,
 }) {
     const {decks} = props;
 
     const router = useRouter();
 
     useEffect(() => {
-        console.log('running deckscontainer useEffect');
 
         if (router.route === '/decks') {
             const decksArray = [];
@@ -54,6 +63,7 @@ function DecksContainer({
             }
             setPublicDecksList(publicDecksList);
         }
+        
     }, []);
 
     return (
@@ -86,6 +96,11 @@ function DecksContainer({
                 : null
             }
 
+            {showPostModal 
+                ? <Fragment><ModalScreen toggleModal={() => togglePostModal(null)}/><PostModal /></Fragment> 
+                : null
+            }
+
         </Fragment>
     );
 }
@@ -96,6 +111,7 @@ const mapStateToProps = ({ modals }) => ({
     editModalVal: modals.editModalVal,
     showDeleteDeckModal: modals.showDeleteDeckModal,
     showCopyModal: modals.showCopyModal,
+    showPostModal: modals.showPostModal,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -106,6 +122,7 @@ const mapDispatchToProps = dispatch => ({
     toggleDeleteDeckModal: (val) => dispatch(toggleDeleteDeckModal(val)),
     toggleErrorModal: () => dispatch(toggleErrorModal()),
     toggleCopyModal: (val) => dispatch(toggleCopyModal(val)),
+    togglePostModal: (val) => dispatch(togglePostModal(val)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DecksContainer);

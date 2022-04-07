@@ -1,10 +1,19 @@
+import { Fragment } from 'react';
+import Head from 'next/head';
+
 import { getPublicDecks } from '../../firebase/firebase.utils';
 
 import DecksContainer from '../../components/decks/decks-container';
 
 function PublicFlashcards(props) {
   return (
-    <DecksContainer props={props} />
+    <Fragment>
+      <Head>
+        <title>Public Decks</title>
+        <meta name="content" content="Public flashcard decks." />
+      </Head>
+      <DecksContainer props={props} />
+    </Fragment>
   );
 }
 

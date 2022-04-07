@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
+import Head from 'next/head';
 import { CookiesProvider } from "react-cookie";
-// import { UserContextProvider } from '../contexts/user.context';
 import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -15,15 +15,17 @@ function MyApp({ Component, pageProps }) {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <CookiesProvider>
-          {/* <UserContextProvider> */}
               <Fragment>
                 <Auth>
                   <Layout>
+                    <Head>
+                      <title>Flashcards App</title>
+                      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                    </Head>
                     <Component {...pageProps} />
                   </Layout>
                 </Auth>
               </Fragment>
-          {/* </UserContextProvider> */}
         </CookiesProvider>
       </PersistGate>
     </Provider>

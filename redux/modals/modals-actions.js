@@ -26,3 +26,8 @@ export const toggleCopyModal = (specificDeck) => ({
     type: ModalsActionTypes.TOGGLE_COPY_MODAL,
     payload: specificDeck,
 });
+
+export const togglePostModal = (specificDeck) => ({
+    type: ModalsActionTypes.TOGGLE_POST_MODAL,
+    payload: specificDeck,
+});

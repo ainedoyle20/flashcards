@@ -28,14 +28,19 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
         const currentUserId = currentUser.id;
 
         if (router.route === '/public-decks') {
-            await editPublicDeck(editModalVal.id, formInput);
-            editReduxPublicDeck(editModalVal.id, formInput);
-            setFormInput({
-                title: '',
-                description: '',
-                createdBy: '',
-            });
-            setEditModalVal(null); 
+            try {
+                await editPublicDeck(editModalVal.id, formInput);
+                editReduxPublicDeck(editModalVal.id, formInput);
+                setFormInput({
+                    title: '',
+                    description: '',
+                    createdBy: '',
+                });
+                setEditModalVal(null);    
+            } catch (error) {
+                console.log('Error editing deck.');
+                alert('Sorry there was an error editing your deck. Please try again later.');
+            }
         } else {
             try {
                 await editDeck(currentUserId, editModalVal.id, formInput);
@@ -47,7 +52,8 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
                 });
                 setEditModalVal(null);
             } catch (error) {
-                console.log('error in deck modal: ', error.message);
+                console.log('Error editing deck.');
+                alert('Sorry there was an error editing your deck. Please try again later.');
             } 
         }
     }

@@ -25,8 +25,6 @@ export function addReduxFlashcardHelper(flashcardList, flashcardToAdd) {
 
     const filteredFlashcardList = flashcardList.filter(flashcard => flashcard.question !== flashcardQuestion);
 
-    console.log('filtered flashcardList: ', filteredFlashcardList);
-
     filteredFlashcardList.push(flashcardToAdd);
     return filteredFlashcardList;
 }

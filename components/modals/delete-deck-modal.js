@@ -18,10 +18,11 @@ function DeleteDeckModal({ toggleDeleteDeckModal, showDeleteDeckModal, deleteRed
         if (router.route === '/public-decks') {
             await deletePublicDeck(deckId);
             deleteReduxPublicDeck(deckId);
+            toggleDeleteDeckModal(null);
         } else {
             await deleteDeck(currentUserId, deckId);
             deleteReduxDeck(deckId);
-            toggleDeleteDeckModal();
+            toggleDeleteDeckModal(null);
         }
     }
 

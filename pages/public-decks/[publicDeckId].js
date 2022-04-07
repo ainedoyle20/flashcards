@@ -1,10 +1,19 @@
+import { Fragment } from 'react';
+import Head from 'next/head';
+
 import { getSpecificPublicDeck } from '../../firebase/firebase.utils';
 
 import FlashcardsContainer from '../../components/flashcards/flashcards-container';
 
 function SpecificPublicDeckPage(props) {
   return (
-    <FlashcardsContainer props={props} />
+    <Fragment>
+      <Head>
+        <title>{props.deck.title}</title>
+        <meta name="content" content="The flashcards of a specific deck." />
+      </Head>
+      <FlashcardsContainer props={props} />
+    </Fragment>
   );
 }
 

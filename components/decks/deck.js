@@ -3,9 +3,15 @@ import { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { checkIsCreator } from '../../firebase/firebase.utils';
-import { toggleDeleteDeckModal, setEditModalVal, toggleErrorModal, toggleCopyModal } from '../../redux/modals/modals-actions';
+import { 
+    toggleDeleteDeckModal, 
+    setEditModalVal, 
+    toggleErrorModal, 
+    toggleCopyModal,
+    togglePostModal, 
+} from '../../redux/modals/modals-actions';
 
-function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setEditModalVal, toggleCopyModal }) {
+function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setEditModalVal, toggleCopyModal, togglePostModal }) {
     const router = useRouter();
 
     function handleClick() {
@@ -17,7 +23,6 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
     }
 
     async function handleDelete() {
-        console.log('delete');
         if (router.route === '/public-decks') {
             const isCreator = await checkIsCreator(currentUser.id, deck.id);
             if (isCreator) {
@@ -41,7 +46,6 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
     }
 
     async function handleEdit() {
-        console.log('edit');
         if (router.route === '/public-decks') {
             const isCreator = await checkIsCreator(currentUser.id, deck.id);
             if (isCreator) {
@@ -63,7 +67,7 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
                     {
                         router.route === '/public-decks' 
                         ? <span className="px-[10%] hidden group-hover:flex" onClick={() => toggleCopyModal(deck)}>Copy</span>
-                        : null
+                        : <span className="px-[10%] hidden group-hover:flex" onClick={() => togglePostModal(deck)}>Post</span>
                     }
                     </div>
                     <div className=" w-2/4 flex justify-end">
@@ -93,6 +97,7 @@ const mapDispatchToProps = dispatch => ({
     toggleErrorModal: () => dispatch(toggleErrorModal()),
     setEditModalVal: (specificDeck) => dispatch(setEditModalVal(specificDeck)),
     toggleCopyModal: (specificDeck) => dispatch(toggleCopyModal(specificDeck)),
+    togglePostModal: (specificDeck) => dispatch(togglePostModal(specificDeck)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Deck);

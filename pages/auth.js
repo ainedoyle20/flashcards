@@ -6,8 +6,8 @@ function Auth() {
     return (
         <Fragment>
             <Head>
-                <title>SignIn</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <title>Sign In</title>
+                <meta name="content" content="Sign up or sign in page." />
             </Head>
             <AuthForm />
         </Fragment>

@@ -5,15 +5,12 @@ import { useRouter } from "next/router";
 import SignUp from "./signup";
 import SignIn from "./signin";
 
-import styles from './auth-form.module.css';
-
 function AuthForm({ currentUser }) {
     const [showSignin, setShowSignin] = useState(false);
 
     const router = useRouter();
 
     if (currentUser && router.route === '/auth') {
-        console.log('there IS a user in authForm!!');
         router.push('/');
     }
 

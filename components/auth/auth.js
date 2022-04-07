@@ -10,7 +10,6 @@ function Auth({ children, setCurrentUser}) {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async userAuth => {
-          console.log('auth useEffect running');
     
           if (userAuth) {
             const userRef = await createUserProfileDocument(userAuth);
@@ -34,6 +33,7 @@ function Auth({ children, setCurrentUser}) {
             setCookie('currentUser', false, { path: '/' });
             setCookie('currentUserId', null, { path: '/' });
           }
+          
         });
     
         return unsubscribe;

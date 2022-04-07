@@ -59,7 +59,8 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
                 });
                 toggleFlashcardModal()
             } catch (error) {
-                console.log('error in flashcardmodal: ', error.message);
+                console.log('Error creating flashcard.');
+                alert('Sorry, there was an error adding your flashcard, please try again later.');
             }    
         } else {
             try {
@@ -71,7 +72,8 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
                 });
                 toggleFlashcardModal();
             } catch (error) {
-                console.log('error in flashcardmodal: ', error.message);
+                console.log('Error creating flashcard.');
+                alert('Sorry, there was an error adding your flashcard, please try again later.');
             } 
         }
     }
@@ -92,10 +94,10 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
                 required
             />
             { duplicate ?
-             <span>
-                This flashcard already exists! If you add this flashcard it will override the flashcard that already exists.
-            </span>  
-            : null 
+                <span className="text-[red]">
+                    This flashcard already exists! If you add this flashcard it will override the flashcard that already exists.
+                </span>  
+                : null 
             }
             
             <label className="mt-1 text-lg" htmlFor="answer">Answer:</label>

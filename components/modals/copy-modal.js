@@ -6,20 +6,21 @@ import { toggleCopyModal } from '../../redux/modals/modals-actions';
 function CopyModal({ deck, toggleCopyModal, currentUser }) {
 
     async function handleConfirm() {
-        const { title, description, flashcards } = deck;
+        const { title, description, flashcards, createdBy } = deck;
 
         const strippedDeck = {
             title,
             description,
             flashcards,
-            createdBy: currentUser.displayName,
+            createdBy,
         }
 
         try {
             await copyPublicDeck(currentUser.id, strippedDeck);
             toggleCopyModal(null);
         } catch (error) {
-            console.log('error in handleConfirm');
+            console.log('Error copying public deck.');
+            alert('Sorry, there was an error copying this public deck. Please try again later.');
         }
     }
 

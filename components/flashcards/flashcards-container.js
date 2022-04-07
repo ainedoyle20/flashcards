@@ -13,7 +13,15 @@ import FlashcardsList from "./flashcards-list";
 
 
 function FlashcardsContainer({
-    props, setSpecificDeckId, setFlashcardList, showFlashcardModal, showErrorModal, currentUser, flashcardList, toggleFlashcardModal, toggleErrorModal 
+    props, 
+    setSpecificDeckId, 
+    setFlashcardList, 
+    showFlashcardModal, 
+    showErrorModal, 
+    currentUser, 
+    flashcardList, 
+    toggleFlashcardModal, 
+    toggleErrorModal, 
 }) {
     const [showList, setShowList] = useState(false);
 
@@ -21,7 +29,6 @@ function FlashcardsContainer({
     const flashcards = deck.flashcards;
 
     useEffect(() => {
-        console.log('FlashcardContainer useEffect running with deck.id: ', deck.id);
         setSpecificDeckId(deck.id);
         setFlashcardList(flashcards);
     }, []);

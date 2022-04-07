@@ -5,6 +5,7 @@ const ModalsActionTypes = {
     TOGGLE_ERROR_MODAL: 'TOGGLE_ERROR_MODAL',
     SET_EDIT_MODAL_VAL: 'SET_EDIT_MODAL_VAL',
     TOGGLE_COPY_MODAL: 'TOGGLE_COPY_MODAL',
+    TOGGLE_POST_MODAL: 'TOGGLE_POST_MODAL',
 }
 
 export default ModalsActionTypes;

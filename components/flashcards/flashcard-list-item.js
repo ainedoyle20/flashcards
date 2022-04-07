@@ -12,27 +12,23 @@ function FlashcardsListItem({ flashcard, index, specificDeckId, currentUser, del
     const router = useRouter();
 
     async function handleDelete(flashcardQuestion) {
-        console.log('flashcardQuestion: ', flashcardQuestion);
         if (router.route === '/decks/[deckId]') {
             try {
-                console.log('values: ', currentUser.id, specificDeckId, flashcardQuestion);
                 await deleteFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
                 deleteReduxFlashcard(flashcardQuestion);
             } catch (error) {
-                console.log('error in handleDelete: ', error.message);
+                console.log('Error deleting flashcard.');
             } 
         } else {
             try {
                 const isCreator = await deletePublicFlashcard(currentUser.id, specificDeckId, flashcardQuestion);
-                console.log('isCreator: ', isCreator);
                 if (!isCreator) {
-                    console.log('got here');
                     toggleErrorModal();
                     return;
                 }
                 deleteReduxFlashcard(flashcardQuestion);
             } catch (error) {
-                console.log('error in handleDelete: ', error.message);
+                console.log('Error deleting flashcard.');
             } 
         }
     }
@@ -47,7 +43,7 @@ function FlashcardsListItem({ flashcard, index, specificDeckId, currentUser, del
             <div className="w-full border-b-2 flex items-start justify-between p-2">
                 <p className="text-lg">A. {flashcard.answer}</p>
                 <span className="flex items-top" onClick={() => handleDelete(flashcard.question)}>
-                    <Image src={RubbishBin} alt="trash" width={20} height={20} />
+                    <Image className="cursor-pointer" src={RubbishBin} alt="trash" width={20} height={20} />
                 </span>
             </div>
             

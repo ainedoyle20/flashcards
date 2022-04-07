@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+import Head from 'next/head';
+
 import { getDecks } from '../../firebase/firebase.utils';
 
 import DecksContainer from '../../components/decks/decks-container';
@@ -5,7 +8,14 @@ import DecksContainer from '../../components/decks/decks-container';
 function DecksPage(props) {
 
   return (
-    <DecksContainer props={props} />
+    <Fragment>
+      <Head>
+        <title>Private Decks</title>
+        <meta name="content" content="Private flashcard decks." />
+      </Head>
+      <DecksContainer props={props} />
+    </Fragment>
+    
   );
 }
 

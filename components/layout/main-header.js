@@ -9,12 +9,10 @@ function MainHeader({ currentUser }) {
     const atAuth = router.route === '/auth' ? true : false;
 
     function signOutUserHandler() {
-        console.log('done');
         signOutUser();
     }
 
     if (currentUser === null && router.route !== '/auth') {
-        console.log('no currentUser in mainheader!!');
         router.push('/auth');
     }
 
@@ -23,8 +21,8 @@ function MainHeader({ currentUser }) {
             <Link href="/decks">
                 <a className={
                     router.route === '/decks' || router.route === '/decks/[deckId]' 
-                    ? 'px-2 sm:text-2xl sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px] underline' 
-                    : "px-2 sm:text-2xl sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]"
+                    ? 'px-2 sm:text-2xl sm:hover:text-[25px] underline' 
+                    : "px-2 sm:text-2xl sm:hover:text-[25px]"
                 } > 
                     My Decks
                 </a>
@@ -35,15 +33,15 @@ function MainHeader({ currentUser }) {
                         <Link href="/public-decks">
                             <a className={
                                 router.route === '/public-decks' || router.route === '/public-decks/[publicDeckId]' 
-                                ? 'px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px] underline' 
-                                : "px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]"
+                                ? 'px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px] underline' 
+                                : "px-2 sm:text-2xl sm:mr-2 sm:hover:text-[25px]"
                             }>
                                 Public-Decks
                             </a>   
                         </Link>
                     </li>
                     <li>
-                        <div className="px-2 sm:text-2xl cursor-pointer sm:hover:text-[25px] lg:text-3xl lg:hover:text-[31px]" onClick={signOutUserHandler}>Logout</div>
+                        <div className="px-2 sm:text-2xl cursor-pointer sm:hover:text-[25px]" onClick={signOutUserHandler}>Logout</div>
                     </li>
                 </ul>
             </nav>

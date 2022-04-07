@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     editModalVal: null,
     showErrorModal: false,
     showCopyModal: null,
+    showPostModal: null,
 }
 
 const modalsReducer = (state=INITIAL_STATE, action) => {
@@ -40,6 +41,11 @@ const modalsReducer = (state=INITIAL_STATE, action) => {
             return {
                 ...state,
                 showCopyModal: action.payload
+            }
+        case ModalsActionTypes.TOGGLE_POST_MODAL:
+            return {
+                ...state,
+                showPostModal: action.payload
             }
         default:
             return state;

@@ -24,7 +24,6 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log('handleSubmit triggered');
 
         const currentUserId = currentUser.id;
 
@@ -39,7 +38,8 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
                 });
                 toggleDeckModal();
             } catch (error) {
-                console.log('error in deck modal: ', error.message);
+                console.log('Error creating deck.');
+                alert('Sorry, there was an error creating your deck.');
             }    
         } else {
             try {
@@ -52,7 +52,8 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
                 });
                 toggleDeckModal();
             } catch (error) {
-                console.log('error in deck modal: ', error.message);
+                console.log('Error creating deck.');
+                alert('Sorry, there was an error creating your deck.');
             } 
         }
     }

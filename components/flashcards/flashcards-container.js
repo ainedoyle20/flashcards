@@ -31,7 +31,7 @@ function FlashcardsContainer({
     useEffect(() => {
         setSpecificDeckId(deck.id);
         setFlashcardList(flashcards);
-    }, []);
+    }, [setSpecificDeckId, deck.id, setFlashcardList, flashcards]);
 
     return (
         <div className="h-screen flex flex-col items-center m-0 p-0">

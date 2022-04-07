@@ -28,7 +28,7 @@ function CopyModal({ deck, toggleCopyModal, currentUser }) {
         <div className="flex flex-col items-center p-4 w-[60vw] h-auto absolute top-[30vh] left-[20vw] bg-[#e4e4e4] text-extrabold rounded-2xl cursor-default sm:w-[50vw] sm:left-[25vw] md:w-[40vw] md:left-[30vw] lg:w-[30vw] lg:left-[35vw]">
             <h2 className="text-xl mt-[4vh] mb-[2%]">Copy</h2>
                 
-                <span>"{deck.title}" </span>
+                <span>{deck.title}</span>
 
             <span className="text-lg mt-[2%] mb-3.5">to your personal decks?</span>
 

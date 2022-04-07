@@ -11,7 +11,7 @@ function FlashcardsCarousel({ flashcards }) {
 
     useEffect(() => {
         setActiveFlashcard(flashcards[activeIndex]);
-    }, [activeIndex])
+    }, [activeIndex, flashcards, setActiveFlashcard]);
 
     function incrementActiveIndex() {
         if (activeIndex === maxIndex) {

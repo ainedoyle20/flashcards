@@ -46,7 +46,6 @@ function DecksContainer({
     const router = useRouter();
 
     useEffect(() => {
-
         if (router.route === '/decks') {
             const decksArray = [];
             if (decks !== undefined) {
@@ -64,7 +63,7 @@ function DecksContainer({
             setPublicDecksList(publicDecksList);
         }
         
-    }, []);
+    }, [decks, router.route, setDeckList, setPublicDecksList]);
 
     return (
         <Fragment>

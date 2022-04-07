@@ -37,7 +37,7 @@ function Auth({ children, setCurrentUser}) {
         });
     
         return unsubscribe;
-    }, []);
+    }, [setCurrentUser, setCookie]);
 
     return (
         <main>

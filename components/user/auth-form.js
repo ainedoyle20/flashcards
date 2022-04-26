@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+
+import {selectCurrentUser} from '../../redux/user/user.selectors';
 
 import SignUp from "./signup";
 import SignIn from "./signin";
 
-function AuthForm({ currentUser }) {
+function AuthForm() {
+    const currentUser = useSelector(selectCurrentUser);
     const [showSignin, setShowSignin] = useState(false);
 
     const router = useRouter();
@@ -23,8 +26,4 @@ function AuthForm({ currentUser }) {
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-export default connect(mapStateToProps)(AuthForm);
+export default AuthForm;

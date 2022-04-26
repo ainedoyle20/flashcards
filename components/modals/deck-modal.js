@@ -1,13 +1,17 @@
 import {useState} from 'react';
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { createDeck, createPublicDeck } from '../../firebase/firebase.utils';
-import { toggleDeckModal } from '../../redux/modals/modals-actions';
+import { toggleModal } from '../../redux/modals/modals-actions';
 import { addReduxDeck } from '../../redux/decks/decks.actions';
-import { addReduxPublicDeck } from '../../redux/publicDecks/public-decks.actions';
 
-function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDeck }) {
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+
+function DeckModal() {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+
     const [formInput, setFormInput] = useState({
         title: '',
         description: '',
@@ -30,13 +34,13 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
         if (router.route !== '/public-decks') {
             try {
                 const createdDeck = await createDeck(currentUserId, formInput);
-                addReduxDeck(createdDeck);
+                dispatch(addReduxDeck(createdDeck));
                 setFormInput({
                     title: '',
                     description: '',
                     createdBy: '',
                 });
-                toggleDeckModal();
+                dispatch(toggleModal(null));
             } catch (error) {
                 console.log('Error creating deck.');
                 alert('Sorry, there was an error creating your deck.');
@@ -44,13 +48,13 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
         } else {
             try {
                 const createdPublicDeck = await createPublicDeck(currentUserId, formInput);
-                addReduxPublicDeck(createdPublicDeck);
+                dispatch(addReduxDeck(createdPublicDeck));
                 setFormInput({
                     title: '',
                     description: '',
                     createdBy: '',
                 });
-                toggleDeckModal();
+                dispatch(toggleModal(null));
             } catch (error) {
                 console.log('Error creating deck.');
                 alert('Sorry, there was an error creating your deck.');
@@ -95,7 +99,7 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
                     required
                 />  
                 <div className="w-3/5 sm:w-[45%] pt-3.5 flex justify-between">
-                    <button type='button' className="text-sm underline" onClick={() => toggleDeckModal()}>Cancel</button>
+                    <button type='button' className="text-sm underline" onClick={() => dispatch(toggleModal(null))}>Cancel</button>
                     <button className="text-sm underline">Create</button>
                 </div>
             </form>
@@ -103,14 +107,4 @@ function DeckModal({currentUser, toggleDeckModal, addReduxDeck, addReduxPublicDe
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleDeckModal: () => dispatch(toggleDeckModal()),
-    addReduxDeck: (createdDeck) => dispatch(addReduxDeck(createdDeck)),
-    addReduxPublicDeck: (createdPublicDeck) => dispatch(addReduxPublicDeck(createdPublicDeck)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeckModal);
+export default DeckModal;

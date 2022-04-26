@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { signOutUser } from "../../firebase/firebase.utils";
 
-function MainHeader({ currentUser }) {
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+
+function MainHeader() {
+    const currentUser = useSelector(selectCurrentUser);
     const router = useRouter();
     const atAuth = router.route === '/auth' ? true : false;
 
@@ -49,10 +52,6 @@ function MainHeader({ currentUser }) {
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-export default connect(mapStateToProps)(MainHeader);
+export default MainHeader;
 
 //className={router.route === '/decks' || router.route === '/decks/[deckId]' ? styles.active : styles.link}

@@ -1,13 +1,19 @@
 import {useState} from 'react';
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { editDeck, editPublicDeck } from '../../firebase/firebase.utils';
-import { setEditModalVal } from '../../redux/modals/modals-actions';
+import { toggleModal } from '../../redux/modals/modals-actions';
 import { editReduxDeck } from '../../redux/decks/decks.actions';
-import { editReduxPublicDeck } from '../../redux/publicDecks/public-decks.actions';
 
-function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, editReduxPublicDeck }) {
+import { selectSpecificDeck } from '../../redux/decks/decks.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+
+function EditModal() {
+    const dispatch = useDispatch();
+    const specificDeck = useSelector(selectSpecificDeck);
+    const currentUser = useSelector(selectCurrentUser);
+
     const [formInput, setFormInput] = useState({
         title: '',
         description: '',
@@ -29,28 +35,28 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
 
         if (router.route === '/public-decks') {
             try {
-                await editPublicDeck(editModalVal.id, formInput);
-                editReduxPublicDeck(editModalVal.id, formInput);
+                await editPublicDeck(specificDeck.id, formInput);
+                dispatch(editReduxDeck({deckId: specificDeck.id, formInput}));
                 setFormInput({
                     title: '',
                     description: '',
                     createdBy: '',
                 });
-                setEditModalVal(null);    
+                dispatch(toggleModal('editModal'));    
             } catch (error) {
                 console.log('Error editing deck.');
                 alert('Sorry there was an error editing your deck. Please try again later.');
             }
         } else {
             try {
-                await editDeck(currentUserId, editModalVal.id, formInput);
-                editReduxDeck(editModalVal.id, formInput);
+                await editDeck(currentUserId, specificDeck.id, formInput);
+                dispatch(editReduxDeck({deckId: specificDeck.id, formInput}));
                 setFormInput({
                     title: '',
                     description: '',
                     createdBy: '',
                 });
-                setEditModalVal(null);
+                dispatch(toggleModal('editModal'));
             } catch (error) {
                 console.log('Error editing deck.');
                 alert('Sorry there was an error editing your deck. Please try again later.');
@@ -71,7 +77,7 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
                     type='text'
                     value={formInput.title}
                     onChange={handleChange}
-                    placeholder={`Currently: ${editModalVal.title}`}
+                    placeholder={`Currently: ${specificDeck.title}`}
                     required
                 />
                 <label className="mt-1" htmlFor="description">Description</label>
@@ -81,7 +87,7 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
                     type='text'
                     value={formInput.description}
                     onChange={handleChange}
-                    placeholder={`Currently: ${editModalVal.description}`}
+                    placeholder={`Currently: ${specificDeck.description}`}
                     required
                 />
                 <label className="mt-1" htmlFor="createdBy">Created By</label>
@@ -91,27 +97,16 @@ function EditModal({ currentUser, editModalVal, setEditModalVal, editReduxDeck, 
                     type='text'
                     value={formInput.createdBy}
                     onChange={handleChange}
-                    placeholder={`Currently: ${editModalVal.createdBy}`}
+                    placeholder={`Currently: ${specificDeck.createdBy}`}
                     required
                 />
                 <div className="w-3/5 sm:w-[45%] pt-3.5 flex justify-between">
-                    <button className="text-sm underline" type="button" onClick={() => setEditModalVal(null)}>Cancel</button>
+                    <button className="text-sm underline" type="button" onClick={() => dispatch(toggleModal(null))}>Cancel</button>
                     <button className="text-sm underline">Edit</button>
                 </div>
             </form>
         </div>
-    )
+    );
 }
 
-const mapStateToProps = ({ modals, user }) => ({
-    editModalVal: modals.editModalVal,
-    currentUser: user.currentUser,
-});
-
-const mapDispatchToProps = dispatch => ({
-    setEditModalVal: (specificDeck) => dispatch(setEditModalVal(specificDeck)),
-    editReduxDeck: (deckId, formInput) => dispatch(editReduxDeck({ deckId, formInput })),
-    editReduxPublicDeck: (deckId, formInput) => dispatch(editReduxPublicDeck({ deckId, formInput })),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditModal);
+export default EditModal;

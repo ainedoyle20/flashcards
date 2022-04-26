@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { updateFlashcards, updateFlashcardsPublic } from '../../firebase/firebase.utils';
-import { toggleFlashcardModal } from '../../redux/modals/modals-actions';
-import { addReduxFlashcard } from '../../redux/decks/decks.actions';
+import { toggleModal } from '../../redux/modals/modals-actions';
+import { addReduxFlashcard } from '../../redux/flashcards/flashcards.actions';
 
-function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFlashcard, flashcardList }) {
+import { selectFlashcards } from '../../redux/flashcards/flashcards.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectSpecificDeck } from '../../redux/decks/decks.selectors';
+
+function FlashcardModal() {
+    const dispatch = useDispatch();
+    const flashcards = useSelector(selectFlashcards);
+    const currentUser = useSelector(selectCurrentUser);
+    const specificDeck = useSelector(selectSpecificDeck);
+
     const [formInput, setFormInput] = useState({
         question: '',
         answer: '',
@@ -16,10 +25,10 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
 
     const router = useRouter();
 
-    function checkForFlashcardDuplicates(flashcardList, flashcardQuestion) {
+    function checkForFlashcardDuplicates(flashcards, flashcardQuestion) {
         let isDuplicate = false;
 
-        for (let char of flashcardList) {
+        for (let char of flashcards) {
             if (char.question === flashcardQuestion) {
                 isDuplicate = true;
             }
@@ -34,7 +43,7 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
         const { id, value } = e.target;
 
         if (e.target.id === 'answer' && ranCheck === false) {
-            checkForFlashcardDuplicates(flashcardList, formInput.question);
+            checkForFlashcardDuplicates(flashcards, formInput.question);
             setRanCheck(true);
         }
 
@@ -51,26 +60,26 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
 
         if (router.route === '/decks/[deckId]') {
             try {
-                await updateFlashcards(currentUserId, deck, formInput);
-                addReduxFlashcard(formInput);
+                await updateFlashcards(currentUser.id, specificDeck, formInput);
+                dispatch(addReduxFlashcard(formInput));
                 setFormInput({
                     question: '',
                     answer: '',
                 });
-                toggleFlashcardModal()
+                dispatch(toggleModal('addFlashcardModal'));
             } catch (error) {
                 console.log('Error creating flashcard.');
                 alert('Sorry, there was an error adding your flashcard, please try again later.');
             }    
         } else {
             try {
-                await updateFlashcardsPublic(currentUserId, deck, formInput);
-                addReduxFlashcard(formInput);
+                await updateFlashcardsPublic(currentUser.id, specificDeck, formInput);
+                dispatch(addReduxFlashcard(formInput));
                 setFormInput({
                     question: '',
                     answer: '',
                 });
-                toggleFlashcardModal();
+                dispatch(toggleModal('addFlashcardModal'));
             } catch (error) {
                 console.log('Error creating flashcard.');
                 alert('Sorry, there was an error adding your flashcard, please try again later.');
@@ -110,7 +119,7 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
                 required
             />
             <div className="w-3/5 sm:w-[45%] pt-3.5 flex justify-between">   
-                <button className="underline text-sm" type="button" onClick={() => toggleFlashcardModal()}>Cancel</button>
+                <button className="underline text-sm" type="button" onClick={() => dispatch(toggleModal(null))}>Cancel</button>
                 <button className="underline text-sm">Add</button>
             </div>
             
@@ -119,13 +128,4 @@ function FlashcardModal({ currentUserId, deck, toggleFlashcardModal, addReduxFla
     );
 }
 
-const mapStateToProps = ({ decks }) => ({
-    flashcardList: decks.flashcardList,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleFlashcardModal: () => dispatch(toggleFlashcardModal()),
-    addReduxFlashcard: (flashcard) => dispatch(addReduxFlashcard(flashcard)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FlashcardModal);
+export default FlashcardModal;

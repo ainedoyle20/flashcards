@@ -1,18 +1,10 @@
-export function editReduxDeckHelper(deckList, deckData) {
-    const { deckId, formInput} = deckData;
+export function editHelper(decksObject, { deckId, formInput}) {
     const { title, description, createdBy } = formInput;
+    console.log('deckId, title', deckId, title);
 
-    const deckToEdit = deckList.filter((deck) => deck.id === deckId)[0];
+    const deckToEdit = decksObject[deckId];
 
-    const editedDeck = {
-        ...deckToEdit,
-        title,
-        description,
-        createdBy,
-    }
-
-    const filteredDeckList = deckList.filter(deck => deck.id !== deckId);
-    return [...filteredDeckList, editedDeck];
+    return { ...decksObject, [deckId]: { ...deckToEdit, title, description, createdBy }};
 }
 
 export function addReduxFlashcardHelper(flashcardList, flashcardToAdd) {

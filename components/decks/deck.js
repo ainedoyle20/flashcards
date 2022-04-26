@@ -1,18 +1,17 @@
-import { useRouter } from 'next/router';
 import { Fragment } from 'react';
-import { connect } from 'react-redux';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { checkIsCreator } from '../../firebase/firebase.utils';
-import { 
-    toggleDeleteDeckModal, 
-    setEditModalVal, 
-    toggleErrorModal, 
-    toggleCopyModal,
-    togglePostModal, 
-} from '../../redux/modals/modals-actions';
 
-function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setEditModalVal, toggleCopyModal, togglePostModal }) {
+import { toggleModal } from '../../redux/modals/modals-actions';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { setSpecificDeck } from '../../redux/decks/decks.actions';
+
+function Deck({ deck }) {
     const router = useRouter();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
 
     function handleClick() {
         if (router.route === '/decks') {
@@ -22,40 +21,43 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
         }
     }
 
+    function handleCopy() {
+        dispatch(setSpecificDeck(deck));
+        dispatch(toggleModal('copyModal'));
+    }
+
+    function handlePost() {
+        dispatch(setSpecificDeck(deck));
+        dispatch(toggleModal('postModal'));
+    }
+
     async function handleDelete() {
+        dispatch(setSpecificDeck(deck));
         if (router.route === '/public-decks') {
             const isCreator = await checkIsCreator(currentUser.id, deck.id);
             if (isCreator) {
-                toggleDeleteDeckModal({
-                    show: true,
-                    deck,
-                    currentUserId: currentUser.id,
-                });
+                dispatch(toggleModal('deleteDeckModal'));
             } else {
-                toggleErrorModal();
+                dispatch(toggleModal('errorModal'));
                 return;
             }
         } else {
-            toggleDeleteDeckModal({
-                show: true,
-                deck,
-                currentUserId: currentUser.id,
-            });
-            
+            dispatch(toggleModal('deleteDeckModal'));
         }
     }
 
     async function handleEdit() {
+        dispatch(setSpecificDeck(deck));
         if (router.route === '/public-decks') {
             const isCreator = await checkIsCreator(currentUser.id, deck.id);
             if (isCreator) {
-                setEditModalVal(deck);
+                dispatch(toggleModal('editModal'));
             } else {
-                toggleErrorModal();
+                dispatch(toggleModal('errorModal'));
                 return;
             }
         } else {
-            setEditModalVal(deck);
+            dispatch(toggleModal('editModal'));
         }
     }
 
@@ -66,8 +68,8 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
                     <div className="w-2/4 flex">
                     {
                         router.route === '/public-decks' 
-                        ? <span className="px-[10%] hidden group-hover:flex" onClick={() => toggleCopyModal(deck)}>Copy</span>
-                        : <span className="px-[10%] hidden group-hover:flex" onClick={() => togglePostModal(deck)}>Post</span>
+                        ? <span className="px-[10%] hidden group-hover:flex" onClick={handleCopy}>Copy</span>
+                        : <span className="px-[10%] hidden group-hover:flex" onClick={handlePost}>Post</span>
                     }
                     </div>
                     <div className=" w-2/4 flex justify-end">
@@ -79,7 +81,7 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
                     <h2 className="mt-4 text-xl md:mt-[6vh]">{deck.title}</h2>
                     <span className="p-5">{deck.description}</span>
                     {
-                        deck.createrId === null ? <span className="text-sm">Created By: {deck.createdBy}</span> : null
+                        router.route === '/public-decks' ? <span className="text-sm">Created By: {deck.createdBy}</span> : null
                     }
                 </div>
             </div>   
@@ -88,16 +90,4 @@ function Deck({ deck, currentUser, toggleDeleteDeckModal, toggleErrorModal, setE
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleDeleteDeckModal: (payload) => dispatch(toggleDeleteDeckModal(payload)),
-    toggleErrorModal: () => dispatch(toggleErrorModal()),
-    setEditModalVal: (specificDeck) => dispatch(setEditModalVal(specificDeck)),
-    toggleCopyModal: (specificDeck) => dispatch(toggleCopyModal(specificDeck)),
-    togglePostModal: (specificDeck) => dispatch(togglePostModal(specificDeck)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Deck);
+export default Deck;

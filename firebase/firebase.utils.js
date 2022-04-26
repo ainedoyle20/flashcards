@@ -74,11 +74,13 @@ export const signInWithGoogle = () => signInWithPopup(auth, provider).then((resu
 async function updatePublicDecks(deckRef, currentUserId, publicDeckObj) {
     const { title, description, createdBy } = publicDeckObj;
     const uniqueId = createUid();
+    const createdAt = Date();
 
     const createdPublicDeck = {
         title: title,
         description: description,
         createdBy: createdBy,
+        createdAt,
         flashcards: [],
         createrId: currentUserId,
         id: uniqueId,
@@ -100,11 +102,13 @@ async function updateDeckDoc(currentUserId, deckObj) {
 
     const { title, description, createdBy } = deckObj;
     const uniqueId = createUid();
+    const createdAt = Date();
 
     const createdDeck = {
         title: title,
         description: description,
         createdBy: createdBy,
+        createdAt,
         flashcards: [],
         id: uniqueId,
     }
@@ -125,11 +129,13 @@ async function setDeckDoc(currentUserId, deckObj) {
 
     const { title, description, createdBy } = deckObj;
     const uniqueId = createUid();
+    const createdAt = Date();
 
     const createdDeck = {
         title,
         description,
         createdBy,
+        createdAt,
         flashcards: [],
         id: uniqueId,
     }
@@ -227,6 +233,7 @@ export async function updateFlashcards(currentUserId, deck, flashcardObj) {
     const deckRef = doc(db, 'decks', currentUserId);
     const deckSnap = await getDoc(deckRef);
     const deckData = deckSnap.data();
+    
     const flashcards = deckData[deck.id].flashcards;
 
     const filteredFlashcards = flashcards.filter(flashcard => flashcard.question !== flashcardObj.question);
@@ -250,11 +257,13 @@ export async function copyPublicDeck(currentUserId, strippedDeck) {
     const { title, description, createdBy, flashcards } = strippedDeck;
 
     const uniqueId = createUid();
+    const createdAt = Date();
 
     const copiedDeck = {
         title,
         description,
         createdBy,
+        createdAt,
         flashcards,
         id: uniqueId,
     }
@@ -286,6 +295,7 @@ export async function copyPublicDeck(currentUserId, strippedDeck) {
 export async function postDeck(currentUserId, specificDeck) {
     const { title, description, createdBy, flashcards } = specificDeck;
     const uniqueId = createUid();
+    const createdAt = Date();
 
     const publicDecksId = 'PUBLIC_DECKS_UID';
     const decksRef = doc(db, 'public-decks', publicDecksId);
@@ -296,6 +306,7 @@ export async function postDeck(currentUserId, specificDeck) {
                 title,
                 description,
                 createdBy,
+                createdAt,
                 flashcards,
                 createrId: currentUserId,
                 id: uniqueId,

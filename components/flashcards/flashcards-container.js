@@ -1,8 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { setSpecificDeckId, setFlashcardList } from '../../redux/decks/decks.actions';
-import { toggleFlashcardModal, toggleErrorModal } from "../../redux/modals/modals-actions";
+import { setSpecificDeck } from '../../redux/decks/decks.actions';
+import { setFlashcardList } from "../../redux/flashcards/flashcards.actions";
+
+import { selectFlashcards } from "../../redux/flashcards/flashcards.selectors";
+import { selectShowModal } from '../../redux/modals/modals.selectors';
 
 import FlashcardHeader from "./flashcard-header";
 import ModalScreen from "../modals/modal-screen";
@@ -11,60 +14,48 @@ import DeleteErrorModal from "../modals/delete-error-modal";
 import FlashcardsCarousel from "./flashcards-carousel";
 import FlashcardsList from "./flashcards-list";
 
+function FlashcardsContainer({ props }) {
+    const dispatch = useDispatch();
+    const reduxFlashcards = useSelector(selectFlashcards);
+    const activeModal = useSelector(selectShowModal);
 
-function FlashcardsContainer({
-    props, 
-    setSpecificDeckId, 
-    setFlashcardList, 
-    showFlashcardModal, 
-    showErrorModal, 
-    currentUser, 
-    flashcardList, 
-    toggleFlashcardModal, 
-    toggleErrorModal, 
-}) {
     const [showList, setShowList] = useState(false);
+    const [modal, setModal] = useState(null);
 
     const { deck } = props;
     const flashcards = deck.flashcards;
 
     useEffect(() => {
-        setSpecificDeckId(deck.id);
-        setFlashcardList(flashcards);
-    }, [setSpecificDeckId, deck.id, setFlashcardList, flashcards]);
+        dispatch(setSpecificDeck(deck));
+        dispatch(setFlashcardList(flashcards));
+    }, []);
+
+    useEffect(() => {
+        switch(activeModal) {
+            case 'addFlashcardModal':
+                setModal(<Fragment><ModalScreen /> <FlashcardModal /></Fragment> );
+                return;
+            case 'errorModal':
+                setModal(<Fragment><ModalScreen /><DeleteErrorModal /></Fragment>);
+                return;
+            default:
+                setModal(null);
+        }
+    }, [activeModal]);
 
     return (
         <div className="h-screen flex flex-col items-center m-0 p-0">
-            <FlashcardHeader setShowList={setShowList} props={props} />
+            <FlashcardHeader setShowList={setShowList} />
             {
-                flashcardList.length && !showList ? <FlashcardsCarousel flashcards={flashcardList} /> : (
-                    flashcardList.length && showList ? <FlashcardsList flashcards={flashcardList} /> : <h1>No available Flashcards!</h1>
+                reduxFlashcards.length && !showList ? <FlashcardsCarousel /> : (
+                    reduxFlashcards.length && showList ? <FlashcardsList /> : <h1>No available Flashcards!</h1>
                 )
             }
-            {showFlashcardModal 
-                ? <Fragment><ModalScreen toggleModal={() => toggleFlashcardModal()} /> <FlashcardModal currentUserId={currentUser.id} deck={deck} /></Fragment> 
-                : null
-            }
-            {showErrorModal 
-                ? <Fragment><ModalScreen toggleModal={() => toggleErrorModal()} /><DeleteErrorModal /></Fragment>
-                : null
-            }
+            
+            {modal}
+            
         </div>
     );
 }
 
-const mapStateToProps = ({ modals, user, decks }) => ({
-    showFlashcardModal: modals.showFlashcardModal,
-    showErrorModal: modals.showErrorModal,
-    currentUser: user.currentUser,
-    flashcardList: decks.flashcardList,
-});
-
-const mapDispatchToProps = dispatch => ({
-    setSpecificDeckId: (specificDeckId) => dispatch(setSpecificDeckId(specificDeckId)),
-    setFlashcardList: (flashcardList) => dispatch(setFlashcardList(flashcardList)),
-    toggleErrorModal: () => dispatch(toggleErrorModal()),
-    toggleFlashcardModal: () => dispatch(toggleFlashcardModal())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FlashcardsContainer);
+export default FlashcardsContainer;

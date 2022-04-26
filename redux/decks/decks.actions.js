@@ -1,14 +1,51 @@
 import DecksActionTypes from "./decks.types";
 
-export const setSpecificDeckId = (specificDeckId) => ({
-    type: DecksActionTypes.SET_SPECIFIC_DECK_ID,
-    payload: specificDeckId,
+import { getDecks, getPublicDecks } from '../../firebase/firebase.utils';
+
+export const setSpecificDeck = (specificDeck) => ({
+    type: DecksActionTypes.SET_SPECIFIC_DECK,
+    payload: specificDeck,
 });
 
-export const setDeckList = (deckList) => ({
-    type: DecksActionTypes.SET_DECK_LIST,
-    payload: deckList,
+export const fetchDecksStart = () => ({
+    type: DecksActionTypes.FETCH_DECKS_START,
 });
+
+export const fetchDecksSuccess = (decksObject) => ({
+    type: DecksActionTypes.FETCH_DECKS_SUCCESS,
+    payload: decksObject,
+});
+
+export const fetchDecksFailed = (error) => ({
+    type: DecksActionTypes.FETCH_DECKS_FAILED,
+    payload: error,
+});
+
+export const fetchPrivateDecksAsync = (currentUserId) => {
+    return async (dispatch) => {
+        dispatch(fetchDecksStart());
+
+        try {
+            const decksObject = await getDecks(currentUserId);
+            dispatch(fetchDecksSuccess(decksObject));
+        } catch (error) {
+            dispatch(fetchDecksFailed(error));
+        }
+    }
+}
+
+export const fetchPublicDecksAsync = () => {
+    return async (dispatch) => {
+        dispatch(fetchDecksStart());
+
+        try {
+            const decksObject = await getPublicDecks();
+            dispatch(fetchDecksSuccess(decksObject));
+        } catch (error) {
+            dispatch(fetchDecksFailed(error));
+        }
+    }
+}
 
 export const addReduxDeck = (createdDeck) => ({
     type: DecksActionTypes.ADD_DECK,
@@ -23,19 +60,4 @@ export const deleteReduxDeck = (deckId) => ({
 export const editReduxDeck = (deckData) => ({
     type: DecksActionTypes.EDIT_DECK,
     payload: deckData,
-});
-
-export const setFlashcardList = (flashcardList) => ({
-    type: DecksActionTypes.SET_FLASHCARD_LIST,
-    payload: flashcardList,
-});
-
-export const addReduxFlashcard = (flashcard) => ({
-    type: DecksActionTypes.ADD_FLASHCARD,
-    payload: flashcard,
-});
-
-export const deleteReduxFlashcard = (flashcardQuestion) => ({
-    type: DecksActionTypes.DELETE_FLASHCARD,
-    payload: flashcardQuestion,
 });

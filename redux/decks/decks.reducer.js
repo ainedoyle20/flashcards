@@ -1,54 +1,58 @@
 import DecksActionTypes from './decks.types';
 
-import { editReduxDeckHelper, addReduxFlashcardHelper } from './decks.utils';
+import { editHelper } from './decks.utils';
 
 const INITIAL_STATE = {
-    specificDeckId: null,
-    deckList: [],
-    flashcardList: [],
+    specificDeck: null,
+    decksObject: {},
+    isDecksLoading: false,
+    error: null,
 }
 
 const decksReducer = (state=INITIAL_STATE, action) => {
     switch (action.type) {
-        case DecksActionTypes.SET_SPECIFIC_DECK_ID:
+        case DecksActionTypes.SET_SPECIFIC_DECK:
             return {
                 ...state,
-                specificDeckId: action.payload,
+                specificDeck: action.payload,
             }
-        case DecksActionTypes.SET_DECK_LIST:
+        case DecksActionTypes.FETCH_DECKS_START: 
             return {
                 ...state,
-                deckList: action.payload,
+                isDecksLoading: true,
+            }
+        case DecksActionTypes.FETCH_DECKS_SUCCESS:
+            return {
+                ...state,
+                error: null,
+                isDecksLoading: false,
+                decksObject: action.payload,
+            }
+        case DecksActionTypes.FETCH_DECKS_FAILED:
+            return {
+                ...state,
+                isDecksLoading: false,
+                error: action.payload,
             }
         case DecksActionTypes.ADD_DECK:
             return {
                 ...state,
-                deckList: [...state.deckList, action.payload],
+                decksObject: {...state.decksObject, [action.payload.id]: action.payload},
             }
         case DecksActionTypes.DELETE_DECK:
             return {
                 ...state,
-                deckList: state.deckList.filter(deck => deck.id !== action.payload),
+                decksObject: Object.keys(state.decksObject)
+                    .filter(key => key !== action.payload)
+                    .reduce((obj,key) => {
+                        obj[key] = state.decksObject[key]
+                        return obj;
+                    }, {}),
             }
         case DecksActionTypes.EDIT_DECK:
             return {
                 ...state,
-                deckList: editReduxDeckHelper(state.deckList, action.payload),
-            }
-        case DecksActionTypes.SET_FLASHCARD_LIST:
-            return {
-                ...state,
-                flashcardList: action.payload,
-            }
-        case DecksActionTypes.ADD_FLASHCARD:
-            return {
-                ...state,
-                flashcardList: addReduxFlashcardHelper(state.flashcardList, action.payload),
-            }
-        case DecksActionTypes.DELETE_FLASHCARD:
-            return {
-                ...state,
-                flashcardList: state.flashcardList.filter(flashcard => flashcard.question !== action.payload),
+                decksObject: editHelper(state.decksObject, action.payload),
             }
         default:
             return state;

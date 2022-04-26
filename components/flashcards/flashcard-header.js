@@ -1,24 +1,29 @@
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { checkIsCreator } from '../../firebase/firebase.utils';
-import { toggleFlashcardModal, toggleErrorModal } from '../../redux/modals/modals-actions';
+import { toggleModal } from '../../redux/modals/modals-actions';
 
-function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcardModal, currentUser }) {
-    const { deck } = props;
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectSpecificDeck } from '../../redux/decks/decks.selectors';
+
+function FlashcardHeader({ setShowList }) {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+    const specificDeck = useSelector(selectSpecificDeck);
 
     const router = useRouter();
     
     async function handleAddFlashcard() {
         if (router.route === '/public-decks/[publicDeckId]') {
-            const isCreator = await checkIsCreator(currentUser.id, deck.id);
+            const isCreator = await checkIsCreator(currentUser.id, specificDeck.id);
             if (isCreator) {
-                toggleFlashcardModal();
+                dispatch(toggleModal('addFlashcardModal'));
             } else {
-                toggleErrorModal();
+                dispatch(toggleModal('errorModal'));
             }    
         } else {
-            toggleFlashcardModal();
+            dispatch(toggleModal('addFlashcardModal'));
         }
     }
     
@@ -33,13 +38,4 @@ function FlashcardHeader({ setShowList, props, toggleErrorModal, toggleFlashcard
     );
 }
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser,
-});
-
-const mapDispatchToProps = dispatch => ({
-    toggleFlashcardModal: () => dispatch(toggleFlashcardModal()),
-    toggleErrorModal: () => dispatch(toggleErrorModal()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FlashcardHeader);
+export default FlashcardHeader;

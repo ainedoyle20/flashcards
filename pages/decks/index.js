@@ -1,19 +1,16 @@
 import { Fragment } from 'react';
 import Head from 'next/head';
 
-import { getDecks } from '../../firebase/firebase.utils';
-
 import DecksContainer from '../../components/decks/decks-container';
 
-function DecksPage(props) {
-
+function DecksPage() {
   return (
     <Fragment>
       <Head>
         <title>Private Decks</title>
         <meta name="content" content="Private flashcard decks." />
       </Head>
-      <DecksContainer props={props} />
+      <DecksContainer />
     </Fragment>
     
   );
@@ -21,9 +18,8 @@ function DecksPage(props) {
 
 export async function getServerSideProps(context) {
   const currentUser = context.req.cookies.currentUser;
-  const {currentUserId} = context.req.cookies;
 
-  if (currentUser === 'false') {
+  if (currentUser === 'false' || currentUser === undefined) {
     return {
       redirect: {
         destination: '/auth',
@@ -32,11 +28,9 @@ export async function getServerSideProps(context) {
     }
   }
 
-  const decks = await getDecks(currentUserId);
-
   return {
     props: {
-      decks,
+      currentUser,
     }
   };
 }

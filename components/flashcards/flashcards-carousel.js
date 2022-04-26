@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import { selectFlashcards } from '../../redux/flashcards/flashcards.selectors';
 
 import Flashcard from './flashcard';
 
-function FlashcardsCarousel({ flashcards }) {
+function FlashcardsCarousel() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [activeFlashcard, setActiveFlashcard] = useState();
+
+    const flashcards = useSelector(selectFlashcards);
 
     const totalLength = flashcards.length;
     const maxIndex = flashcards.length - 1;
 
     useEffect(() => {
         setActiveFlashcard(flashcards[activeIndex]);
-    }, [activeIndex, flashcards, setActiveFlashcard]);
+    }, [activeIndex]);
 
     function incrementActiveIndex() {
         if (activeIndex === maxIndex) {

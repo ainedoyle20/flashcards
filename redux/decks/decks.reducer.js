@@ -3,7 +3,7 @@ import DecksActionTypes from './decks.types';
 import { editHelper } from './decks.utils';
 
 const INITIAL_STATE = {
-    specificDeck: null,
+    specificDeck: {},
     decksObject: {},
     isDecksLoading: false,
     error: null,

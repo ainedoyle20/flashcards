@@ -30,7 +30,7 @@ function DecksGrid() {
     }
     
     return (
-        <div className="grid grid-cols-fluid gap-4 p-3.5 sm:p-5">
+        <div className="max-h-[80vh] overflow-y-scroll grid grid-cols-fluid gap-4 p-3.5 sm:p-5">
             {
                 decks.length 
                 ? decks.map(deck => (

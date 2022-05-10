@@ -27,7 +27,20 @@ function FlashcardsContainer({ props }) {
 
     useEffect(() => {
         dispatch(setSpecificDeck(deck));
+
+        // Clearing specific deck from redux on leaving a specific deck
+        return () => {
+            dispatch(setSpecificDeck({}));
+        }
+    }, []);
+
+    useEffect(() => {
         dispatch(setFlashcardList(flashcards));
+
+        // Clearing the flashcard list from redux on leaving a specific deck
+        return () => {
+            dispatch(setFlashcardList([]));
+        }
     }, []);
 
     useEffect(() => {

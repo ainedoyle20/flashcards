@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {currentUser}
+        props: {currentUser: null}
     };
 }
 

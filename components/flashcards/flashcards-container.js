@@ -57,7 +57,7 @@ function FlashcardsContainer({ props }) {
     }, [activeModal]);
 
     return (
-        <div className="h-screen flex flex-col items-center m-0 p-0">
+        <div className="h-[89vh] flex flex-col items-center m-0 p-0">
             <FlashcardHeader setShowList={setShowList} />
             {
                 reduxFlashcards.length && !showList ? <FlashcardsCarousel /> : (

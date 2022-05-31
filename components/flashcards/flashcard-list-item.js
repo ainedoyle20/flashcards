@@ -50,7 +50,13 @@ function FlashcardsListItem({ flashcard, index }) {
             </div>
 
             <div className="w-full border-b-2 flex items-center p-2">
-                <p className="text-lg">A. {flashcard.answer}</p>
+                <div>
+                    A. {
+                        flashcard.answer.match(/\n/g)||[].length > 0 
+                        ? flashcard.answer.split("\n").map(line => <p key={Math.random(1000000*10000)} className="my-2">{line}</p>)
+                        : <p>{flashcard.answer}</p>
+                    }
+                </div>
             </div>
             
         </li>
